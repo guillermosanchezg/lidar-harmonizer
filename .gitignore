@@ -1,0 +1,21 @@
+# Entornos virtuales
+wpce_env/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Carpetas con datos pesados o modelos generados
+models/
+results/
+stats/
+conjuntos_de_prueba/
+matrices/
+class_statistics/
+point_counts_by_gantry_and_class/
+
+# Si tienes algún archivo de datos oculto
+*.pcd
+*.csv
+*.pth
+

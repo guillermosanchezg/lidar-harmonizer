@@ -1,0 +1,55 @@
+MODEL_HYPERPARAMETERS:
+  num_points: 2900 
+  num_classes: 16
+  feature_vector_size: 512
+
+TRAINING_HYPERPARAMETERS:
+  epochs: 100
+  batch_size: 256
+  learning_rate: 0.001
+  max_instances: 2000
+  early_stopping_patience: 10
+  early_stopping_delta: 0.01
+
+DEVICE_CONFIG:
+  device: "cuda"
+
+SELECTED_CLASSES:
+  - "2"
+  - "3"
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+  - "10"
+  - "11"
+  - "13"
+  - "14"
+  - "15"
+  - "17"
+  - "18"
+  - "19"
+
+CLASS_NAME_MAPPING:
+  "2": "turismo"
+  "3": "camión rígido"
+  "4": "bus"
+  "5": "mini bus"
+  "6": "caravana"
+  "7": "camión con contenedor"
+  "8": "camión de obra"
+  "9": "camión articulado"
+  "13": "L3H3"
+  "14": "hormigonera"
+  "15": "grúa"
+  "16": "cabeza tractora"
+  "17": "camión de trabajo"
+  "18": "asistencia de carretera"
+  "19": "blindado"
+
+CONFUSION_MATRIX_CONFIG:
+  save_dir: "./matrices/"
+  model_name: "pointnet_"
+
