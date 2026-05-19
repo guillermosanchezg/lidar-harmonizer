@@ -132,58 +132,96 @@ def uniform_points(points, num_points):
         return np.vstack((points, padding))
     return points
 
-
-def balance_dataset(data, labels, paths=None, gantry_distances=None, max_instances=1000):
+def get_event_id(file_path):
     """
-    Balancea un dataset reduciendo clases grandes sin sobremuestreo, preservando la proporción de instancias por distancia.
-
-    Args:
-        data (list): Nubes de puntos.
-        labels (list): Etiquetas correspondientes.
-        paths (list): Rutas de los archivos (opcional).
-        gantry_distances (list): Distancias asociadas (opcional).
-        max_instances (int): Máximo de instancias por clase.
-
-    Returns:
-        tuple: Datos, etiquetas, rutas, y distancias balanceados.
+    Extrae un identificador único del evento a partir de la ruta del archivo.
+    Asume la estructura: .../<gantry>/<class>/<date>/<hour>/<file.pcd>
+    EXCLUYE 'gantry' para que todas las distancias del mismo vehículo 
+    se agrupen en un único evento inseparable.
     """
+    # Normalizar separadores
+    path_parts = file_path.replace('\\', '/').split('/')
+    
+    # Extraer las partes relevantes de la ruta (ignorar path_parts[-5] que es gantry)
+    if len(path_parts) >= 5:
+        cls = path_parts[-4]
+        date = path_parts[-3]
+        hour = path_parts[-2]
+        # El ID único del evento es la combinación de clase, día y hora
+        return f"{cls}_{date}_{hour}"
+    else:
+        # Fallback de seguridad si hay algún archivo inesperado
+        return os.path.basename(os.path.dirname(file_path))
 
-    # Agrupar por (label, gantry_distance)
-    class_distance_to_indices = defaultdict(list)
-    for idx, (label, distance) in enumerate(zip(labels, gantry_distances)):
-        class_distance_to_indices[(label, distance)].append(idx)
+def balance_dataset(data, labels, paths, gantry_distances, max_instances=1000, percentage=0.7):
+    """
+    Balancea el dataset dividiendo en Base de Conocimiento (Train) y Consulta (Unseen).
+    Agrupa los archivos por evento único de paso (agrupando todas las distancias gantry) 
+    para evitar Data Leakage temporal.
+    Garantiza estrictamente no superar el límite de max_instances.
+    """
+    print(f"\nAplicando balanceo: Max {max_instances} inst. (Estricto) | Ratio temporal {percentage*100}%")
+    
+    # Agrupar por clase y luego por identificador de evento
+    grouped = defaultdict(lambda: defaultdict(list))
+    
+    for i, path in enumerate(paths):
+        label = labels[i]
+        event_id = get_event_id(path)
+        grouped[label][event_id].append(i)
 
-    # Calcular proporción de instancias por distancia para cada clase
-    class_to_total_count = defaultdict(int)
-    for (label, _), indices in class_distance_to_indices.items():
-        class_to_total_count[label] += len(indices)
+    bal_indices = []
+    unseen_indices = []
 
-    # Balancear los datos
-    balanced_data = []
-    balanced_labels = []
-    balanced_paths = [] if paths else None
-    balanced_gantry_distances = [] if gantry_distances else None
+    print("\n--- Distribución de Datos tras el Split Temporal ---")
+    for class_id, time_folders in grouped.items():
+        folders = list(time_folders.keys())
+        random.shuffle(folders) # Barajar eventos
 
-    for (label, distance), indices in class_distance_to_indices.items():
-        total_class_instances = class_to_total_count[label]
-        proportion = len(indices) / total_class_instances
+        total_pcds = sum(len(idxs) for idxs in time_folders.values())
+        # El objetivo es el límite de porcentaje, sin pasarse NUNCA del max_instances
+        target_train_size = min(max_instances, int(total_pcds * percentage))
+        
+        current_train = 0
+        train_folders = set()
 
-        # Calcular el número máximo de instancias para esta distancia
-        max_instances_for_distance = int(proportion * max_instances)
-        if len(indices) > max_instances_for_distance:
-            indices = np.random.choice(indices, max_instances_for_distance, replace=False)
+        # Rellenar Entrenamiento evaluando trayectoria completa (evento) por evento
+        for folder in folders:
+            folder_pcds = len(time_folders[folder])
+            
+            # Si el evento entero (todas las distancias) cabe sin pasarnos del objetivo, lo metemos
+            if current_train + folder_pcds <= target_train_size:
+                train_folders.add(folder)
+                current_train += folder_pcds
+                bal_indices.extend(time_folders[folder])
+        
+        # Todo lo que no entró al Entrenamiento, va a Consulta (Unseen)
+        unseen_count = 0
+        for folder in folders:
+            if folder not in train_folders:
+                unseen_count += len(time_folders[folder])
+                unseen_indices.extend(time_folders[folder])
 
-        # Añadir los datos balanceados
-        balanced_data.extend([data[idx] for idx in indices])
-        balanced_labels.extend([labels[idx] for idx in indices])
-        if paths:
-            balanced_paths.extend([paths[idx] for idx in indices])
-        if gantry_distances:
-            balanced_gantry_distances.extend([gantry_distances[idx] for idx in indices])
+        print(f"Clase {class_id}: Total={total_pcds} | Train (Balanced)={current_train} | Unseen={unseen_count}")
 
-    return (balanced_data, balanced_labels, balanced_paths, balanced_gantry_distances)
+    # Reconstruir listas para Knowledge/Train
+    bal_data = [data[i] for i in bal_indices]
+    bal_labels = [labels[i] for i in bal_indices]
+    bal_paths = [paths[i] for i in bal_indices]
+    bal_gantries = [gantry_distances[i] for i in bal_indices]
 
+    # Reconstruir listas para Unseen/Consulta
+    unseen_data = [data[i] for i in unseen_indices]
+    unseen_labels = [labels[i] for i in unseen_indices]
+    unseen_paths = [paths[i] for i in unseen_indices]
+    unseen_gantries = [gantry_distances[i] for i in unseen_indices]
 
+    print("-" * 50)
+    print(f"-> Base de Conocimiento (Train): {len(bal_indices)} nubes")
+    print(f"-> Set de Consulta (Unseen):     {len(unseen_indices)} nubes")
+    print("-" * 50)
+
+    return (bal_data, bal_labels, bal_paths, bal_gantries), (unseen_data, unseen_labels, unseen_paths, unseen_gantries)
 
 def plot_confusion_matrix(y_true, y_pred, classes, model_name, save_dir, label_mapping=None):
     """

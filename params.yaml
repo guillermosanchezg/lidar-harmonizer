@@ -1,13 +1,12 @@
 MODEL_HYPERPARAMETERS:
-  num_points: 2900 
-  num_classes: 16
-  feature_vector_size: 512
+  num_points: 2900
+  feature_vector_size: 1024
 
 TRAINING_HYPERPARAMETERS:
   epochs: 100
-  batch_size: 256
+  batch_size: 64
   learning_rate: 0.001
-  max_instances: 2000
+  max_instances: 1000
   early_stopping_patience: 10
   early_stopping_delta: 0.01
 
@@ -15,41 +14,72 @@ DEVICE_CONFIG:
   device: "cuda"
 
 SELECTED_CLASSES:
-  - "2"
-  - "3"
-  - "4"
-  - "5"
-  - "6"
-  - "7"
-  - "8"
-  - "9"
-  - "10"
-  - "11"
-  - "13"
-  - "14"
-  - "15"
-  - "17"
-  - "18"
-  - "19"
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 13
+  - 14
+  - 15
+  - 17
+  - 18
+  - 19
 
 CLASS_NAME_MAPPING:
-  "2": "turismo"
-  "3": "camión rígido"
-  "4": "bus"
-  "5": "mini bus"
-  "6": "caravana"
-  "7": "camión con contenedor"
-  "8": "camión de obra"
-  "9": "camión articulado"
-  "13": "L3H3"
-  "14": "hormigonera"
-  "15": "grúa"
-  "16": "cabeza tractora"
-  "17": "camión de trabajo"
-  "18": "asistencia de carretera"
-  "19": "blindado"
+  2: "turismo"
+  3: "camión rígido"
+  4: "bus"
+  5: "mini bus"
+  6: "caravana"
+  7: "camión con contenedor"
+  8: "camión de obra"
+  9: "camión articulado"
+  13: "L3H3"
+  14: "hormigonera"
+  15: "grúa"
+  16: "cabeza tractora"
+  17: "camión de trabajo"
+  18: "asistencia de carretera"
+  19: "blindado"
 
 CONFUSION_MATRIX_CONFIG:
-  save_dir: "./matrices/"
-  model_name: "pointnet_"
+  save_dir: "./matrices"
+  model_name: "pointnet"
 
+# ---------------------------------------------------------
+# NUEVA SECCIÓN DE AGRUPACIÓN DE CLASES (SUPERCLASES V2X)
+# ---------------------------------------------------------
+TRAINING_MODE: "superclass"
+
+SUPERCLASS_MAPPING:
+  2: 0  # Passenger car
+  13: 1 # Van L3H3
+  4: 2  # Bus
+  5: 2  # Mini bus -> Bus
+  3: 3  # Rigid truck
+  9: 4  # Articulated truck
+  # El resto será mapeado a 5 (Otros) de forma automática por código, pero es mejor declararlos:
+  6: 5
+  7: 5
+  8: 5
+  10: 5
+  11: 5
+  14: 5
+  15: 5
+  17: 5
+  18: 5
+  19: 5
+
+SUPERCLASS_NAMES:
+  0: "Passenger Car"
+  1: "Van"
+  2: "Bus"
+  3: "Rigid Truck"
+  4: "Articulated Truck"
+  5: "Other Vehicles"

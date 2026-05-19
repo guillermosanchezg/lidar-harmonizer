@@ -4,31 +4,57 @@ import pandas as pd
 import argparse
 from collections import Counter
 
+
 def extract_gantry_distance(path):
     try:
-        dist_str = path.replace('\\', '/').split('/')[-5] 
+        dist_str = str(path).replace('\\', '/').split('/')[-5] 
         # Añadimos el signo '-' para no perder las distancias negativas
         clean_dist = ''.join([c for c in dist_str if c.isdigit() or c == '.' or c == '-'])
         return float(clean_dist) if clean_dist else 0.0
     except Exception:
         return 0.0
 
+def extract_event_id(path):
+    """
+    Extrae el ID único del evento para la Votación de Trayectoria.
+    Asume la estructura: .../<gantry>/<class>/<date>/<hour>/<file.pcd>
+    """
+    try:
+        path_parts = str(path).replace('\\', '/').split('/')
+        if len(path_parts) >= 5:
+            cls = path_parts[-4]
+            date = path_parts[-3]
+            hour = path_parts[-2]
+            return f"{cls}_{date}_{hour}"
+        return os.path.basename(os.path.dirname(str(path)))
+    except Exception:
+        return "Unknown"
+
+
 def calculate_combined_weight(latent_distance, gantry_difference, alpha=0.7, beta=0.3):
     w_latent = 1 / (1 + latent_distance)
     w_gantry = 1 / (1 + gantry_difference)
     return alpha * w_latent + beta * w_gantry
 
+
+def safe_eval(val, k):
+    """Evalúa de forma segura por si pandas ya lo convirtió a lista"""
+    if isinstance(val, str):
+        return eval(val)[:k]
+    elif isinstance(val, list):
+        return val[:k]
+    return val
+
+
 def calculate_predictions(data, k):
-    data["Neighbor Labels"] = data["Neighbor Labels"].apply(lambda x: eval(x)[:k] if isinstance(x, str) else x[:k])
-    data["Distances"] = data["Distances"].apply(lambda x: eval(x)[:k] if isinstance(x, str) else x[:k])
-    data["Neighbors"] = data["Neighbors"].apply(lambda x: eval(x)[:k] if isinstance(x, str) else x[:k])
+    data["Neighbor Labels"] = data["Neighbor Labels"].apply(lambda x: safe_eval(x, k))
+    data["Distances"] = data["Distances"].apply(lambda x: safe_eval(x, k))
+    data["Neighbors"] = data["Neighbors"].apply(lambda x: safe_eval(x, k))
 
     pred_maj, pred_inv, pred_sq, pred_gant = [], [], [], []
-    tp_maj, tp_inv, tp_sq, tp_gant = [], [], [], []
     query_gantries = []
 
     for _, row in data.iterrows():
-        query_label = row["Original Label"]
         neighbors = row["Neighbor Labels"] 
         distances = row["Distances"]
 
@@ -38,7 +64,6 @@ def calculate_predictions(data, k):
         # Majority
         p_maj = Counter(neighbors).most_common(1)[0][0]
         pred_maj.append(p_maj)
-        tp_maj.append(query_label == p_maj)
 
         # Inverse
         w_inv = [1 / (d + 1e-6) if d > 0 else 1.0 for d in distances]
@@ -47,7 +72,6 @@ def calculate_predictions(data, k):
             scores_inv[n] = scores_inv.get(n, 0) + w
         p_inv = max(scores_inv, key=scores_inv.get)
         pred_inv.append(p_inv)
-        tp_inv.append(query_label == p_inv)
 
         # Squared
         w_sq = [1 / ((d ** 2) + 1e-6) if d > 0 else 1.0 for d in distances]
@@ -56,7 +80,6 @@ def calculate_predictions(data, k):
             scores_sq[n] = scores_sq.get(n, 0) + w
         p_sq = max(scores_sq, key=scores_sq.get)
         pred_sq.append(p_sq)
-        tp_sq.append(query_label == p_sq)
 
         # Gantry
         neighbor_gantries = [extract_gantry_distance(p) for p in row["Neighbors"]]
@@ -73,35 +96,45 @@ def calculate_predictions(data, k):
             scores_gant[n] = scores_gant.get(n, 0) + w
         p_gant = max(scores_gant, key=scores_gant.get)
         pred_gant.append(p_gant)
-        tp_gant.append(query_label == p_gant)
 
     data["Query_Gantry"] = query_gantries
-    data["Predicted_Majority"] = pred_maj
-    data["TP_Majority"] = tp_maj
-    data["Predicted_Inverse"] = pred_inv
-    data["TP_Inverse"] = tp_inv
-    data["Predicted_Squared"] = pred_sq
-    data["TP_Squared"] = tp_sq
-    data["Predicted_Gantry"] = pred_gant
-    data["TP_Gantry"] = tp_gant
+    data["Predicted_Majority_Base"] = pred_maj
+    data["Predicted_Inverse_Base"] = pred_inv
+    data["Predicted_Squared_Base"] = pred_sq
+    data["Predicted_Gantry_Base"] = pred_gant
+
+    # ==========================================
+    # VOTACIÓN DE TRAYECTORIA APLICADA AQUÍ
+    # ==========================================
+    data['event_id'] = data['Query'].apply(extract_event_id)
+    
+    for method in ['Majority', 'Inverse', 'Squared', 'Gantry']:
+        base_col = f"Predicted_{method}_Base"
+        final_col = f"Predicted_{method}"
+        tp_col = f"TP_{method}"
+        
+        # Agrupar por evento de vehículo y elegir la más votada en esa trayectoria
+        voted_preds = data.groupby('event_id')[base_col].agg(lambda x: x.mode()[0])
+        
+        # Asignar la final y calcular TPs
+        data[final_col] = data['event_id'].map(voted_preds)
+        data[tp_col] = data["Original Label"] == data[final_col]
 
     return data
+
 
 def get_metrics_for_method(data, pred_col, tp_col, idx_to_name_map):
     metrics = {}
     class_metrics = {}
     
-    # === CONFIGURACIÓN DE LA PRUEBA DE INDULTO ===
-    # Ajusta estos IDs según tu dataset. 
-    # Supongamos: Passenger Car = 2, Van = 13
+    # Ajusta estos IDs si en el futuro cambian
     ID_PASSENGER_CAR = 0  
     ID_VAN = 1           
     
-    # 1. Identificar las filas a ignorar (Verdad=Car, Predicción=Van)
+    # Ignorar errores donde era Coche y predijo Furgoneta
     mask_to_ignore = (data["Original Label"] == ID_PASSENGER_CAR) & (data[pred_col] == ID_VAN)
     casos_ignorados = mask_to_ignore.sum()
     
-    # 2. Filtrar el dataframe para los cálculos (eliminamos esas filas)
     data_filtered = data[~mask_to_ignore].copy()
     
     total_samples = len(data_filtered)
@@ -146,15 +179,15 @@ def get_metrics_for_method(data, pred_col, tp_col, idx_to_name_map):
     metrics["average_precision"] = total_precision / max(total_classes, 1)
     metrics["average_recall"] = total_recall / max(total_classes, 1)
     metrics["class_metrics"] = class_metrics
-    
-    # Guardamos el recuento en el JSON para poder verlo
     metrics["ignoring_car_to_van_errors"] = int(casos_ignorados)
 
     return metrics
 
+
 def save_csv(data, path, columns):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     data[columns].to_csv(path, index=False)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -163,7 +196,7 @@ def main():
     model_name = args.model_name
 
     csv_path = f"./outputs/knn_results/k_neighbors_all_{model_name}.csv"
-    output_path = f"./outputs/knn_results/metrics_{model_name}.json"
+    output_path = f"./outputs/knn_results/metrics_trajectory_{model_name}.json"
     stats_path = f"./outputs/stats/{model_name}_stats.json"
     out_dir = "./outputs/knn_results"
 
@@ -184,10 +217,8 @@ def main():
 
     results = {"inverse": {}, "squared": {}, "gantry": {}}
     best = {"inverse": (None, 0), "squared": (None, 0), "gantry": (None, 0)}
-    
     gantry_metrics_best_k = {"inverse": {}, "squared": {}, "gantry": {}}
 
-    # Reducimos el bucle a K=10
     for k in range(2, 11):
         data_k = data_full.copy()
         data_k = calculate_predictions(data_k, k)
@@ -209,16 +240,14 @@ def main():
             if metric_val >= best[variant][1]:
                 best[variant] = (k, metric_val)
                 cols = ["Query", "Original Label", pred_col, "Neighbor Labels", "Distances", "Neighbors", "Query_Gantry"]
-                save_csv(data_k[~data_k[tp_col]], f"{out_dir}/misses_{model_name}_{variant}.csv", cols)
-                save_csv(data_k[data_k[tp_col]], f"{out_dir}/matches_{model_name}_{variant}.csv", cols)
+                save_csv(data_k[~data_k[tp_col]], f"{out_dir}/misses_trajectory_{model_name}_{variant}.csv", cols)
+                save_csv(data_k[data_k[tp_col]], f"{out_dir}/matches_trajectory_{model_name}_{variant}.csv", cols)
                 
-                # Desglose por Gantry
                 gantry_breakdown = {}
                 for gantry_val in sorted(data_k["Query_Gantry"].unique()):
                     gantry_subset = data_k[data_k["Query_Gantry"] == gantry_val]
                     if len(gantry_subset) > 0:
                         metrics_for_gantry = get_metrics_for_method(gantry_subset, pred_col, tp_col, idx_to_name_map)
-                        # AÑADIMOS "class_breakdown" AQUÍ
                         gantry_breakdown[f"{gantry_val}m"] = {
                             "weighted_f1": metrics_for_gantry["weighted_f1"],
                             "accuracy": metrics_for_gantry["accuracy"],
@@ -241,7 +270,7 @@ def main():
 
     with open(output_path, "w") as f:
         json.dump(final, f, indent=4)
-    print(f"\n✅ Métricas guardadas en {output_path}")
+    print(f"\n✅ Métricas de trayectoria guardadas en {output_path}")
 
 if __name__ == "__main__":
     main()
