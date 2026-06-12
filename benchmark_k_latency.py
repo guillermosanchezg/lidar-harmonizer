@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 from collections import Counter
 
-from models_pyg import PointNet2Classifier
+from models_pyg import DGCNNClassifier, PointNet2Classifier, PointMLPClassifier
 from utils import normalize_point_cloud, uniform_points
 import open3d as o3d
 
@@ -27,8 +27,12 @@ def get_model(model_name, feature_size):
     state_dict = torch.load(model_path, map_location=device, weights_only=True)
     num_classes = state_dict["fc3.weight"].shape[0]
 
-    # Forzamos PointNet por defecto
-    model = PointNet2Classifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
+    if "dgcnn" in model_name.lower():
+        model = DGCNNClassifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
+    elif "pointmlp" in model_name.lower():
+        model = PointMLPClassifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
+    else:
+        model = PointNet2Classifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
 
     model.load_state_dict(state_dict)
     model.eval()

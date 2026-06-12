@@ -9,6 +9,11 @@ TRAINING_HYPERPARAMETERS:
   max_instances: 5000
   early_stopping_patience: 25
   early_stopping_delta: 0.01
+  triplet_alpha: 0.5   # peso de triplet loss; 0 = CE-only puro (sin mining)
+
+# Semilla global para reproducibilidad de splits y submuestreos.
+# El split se genera UNA sola vez y se persiste en ./data/splits/split.csv.
+seed: 42
 
 DEVICE_CONFIG:
   device: "cuda"

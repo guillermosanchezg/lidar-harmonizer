@@ -4,14 +4,13 @@ import open3d as o3d
 import yaml
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
-from collections import Counter
+from collections import Counter, defaultdict
 import random
 import json
 import torch
 from sklearn.manifold import TSNE
-from torch.utils.data import DataLoader  # Import necesario para DataLoader
-import random
-from collections import defaultdict
+from torch.utils.data import DataLoader
+import pandas as pd
 
 def iterate_dataset(dataset_path):
     """
@@ -152,6 +151,112 @@ def get_event_id(file_path):
     else:
         # Fallback de seguridad si hay algún archivo inesperado
         return os.path.basename(os.path.dirname(file_path))
+
+def set_global_seed(seed: int):
+    """Fija semillas en random, numpy, torch y cuda para reproducibilidad total."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+
+def load_or_create_split(data, labels, paths, gantry_distances,
+                          seed=42, percentage=0.7,
+                          split_path="./data/splits/split.csv"):
+    """
+    Carga el split canónico desde disco o lo genera y persiste.
+
+    El Unseen se fija como el complementario de un split porcentual puro
+    (max_instances=∞), de modo que es IDÉNTICO para cualquier valor de
+    max_instances con el que luego se entrene.  Para reducir el Knowledge
+    a N instancias por clase, llama a subsample_knowledge() a posteriori.
+
+    Devuelve (knowledge_indices, unseen_indices) como listas de índices
+    en los arrays data/labels/paths recibidos.
+    """
+    if os.path.exists(split_path):
+        print(f"[Split] Cargando split existente desde {split_path}...")
+        df = pd.read_csv(split_path)
+        path_to_idx = {p: i for i, p in enumerate(paths)}
+        knowledge_indices, unseen_indices = [], []
+        missing = 0
+        for _, row in df.iterrows():
+            p = row["path"]
+            if p in path_to_idx:
+                idx = path_to_idx[p]
+                if row["split"] == "knowledge":
+                    knowledge_indices.append(idx)
+                else:
+                    unseen_indices.append(idx)
+            else:
+                missing += 1
+        if missing > 0:
+            print(f"[Split] WARNING: {missing} rutas del CSV no encontradas en el dataset.")
+        print(f"[Split] {len(knowledge_indices)} knowledge | {len(unseen_indices)} unseen")
+        return knowledge_indices, unseen_indices
+
+    # ---------- Generar split nuevo ----------
+    print(f"[Split] Generando split con seed={seed}, percentage={percentage}...")
+    set_global_seed(seed)
+
+    grouped = defaultdict(lambda: defaultdict(list))
+    for i, path in enumerate(paths):
+        event_id = get_event_id(path)
+        grouped[labels[i]][event_id].append(i)
+
+    knowledge_indices, unseen_indices = [], []
+
+    for class_id, time_folders in grouped.items():
+        folders = list(time_folders.keys())
+        random.shuffle(folders)
+
+        total_pcds = sum(len(v) for v in time_folders.values())
+        # Split puro por porcentaje (sin cap de max_instances)
+        target_train = int(total_pcds * percentage)
+
+        current = 0
+        train_set = set()
+        for folder in folders:
+            n = len(time_folders[folder])
+            if current + n <= target_train:
+                train_set.add(folder)
+                current += n
+                knowledge_indices.extend(time_folders[folder])
+
+        for folder in folders:
+            if folder not in train_set:
+                unseen_indices.extend(time_folders[folder])
+
+    # Persistir
+    os.makedirs(os.path.dirname(split_path), exist_ok=True)
+    rows = (
+        [{"path": paths[i], "label": labels[i], "split": "knowledge"} for i in knowledge_indices] +
+        [{"path": paths[i], "label": labels[i], "split": "unseen"}    for i in unseen_indices]
+    )
+    pd.DataFrame(rows).to_csv(split_path, index=False)
+    print(f"[Split] Guardado en {split_path}: {len(knowledge_indices)} knowledge | {len(unseen_indices)} unseen")
+    return knowledge_indices, unseen_indices
+
+
+def subsample_knowledge(knowledge_indices, labels, max_instances, seed=42):
+    """
+    Submuestrea el pool de Knowledge a max_instances por clase.
+    Usa una semilla fija para que el resultado sea idéntico entre ejecuciones.
+    """
+    rng = random.Random(seed)
+    by_class = defaultdict(list)
+    for idx in knowledge_indices:
+        by_class[labels[idx]].append(idx)
+
+    result = []
+    for cls, idxs in sorted(by_class.items()):
+        if len(idxs) > max_instances:
+            result.extend(rng.sample(idxs, max_instances))
+        else:
+            result.extend(idxs)
+    return result
+
 
 def balance_dataset(data, labels, paths, gantry_distances, max_instances=1000, percentage=0.7):
     """

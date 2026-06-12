@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import yaml
 import open3d as o3d
 
-from models_pyg import DGCNNClassifier, PointNet2Classifier
+from models_pyg import DGCNNClassifier, PointNet2Classifier, PointMLPClassifier
 from utils import normalize_point_cloud, uniform_points
 
 with open("params.yaml", "r") as file:
@@ -57,6 +57,8 @@ def get_model(model_name, feature_size):
 
     if "dgcnn" in model_name.lower():
         model = DGCNNClassifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
+    elif "pointmlp" in model_name.lower():
+        model = PointMLPClassifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
     else:
         model = PointNet2Classifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
 
