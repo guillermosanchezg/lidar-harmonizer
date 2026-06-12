@@ -196,10 +196,22 @@ if __name__ == "__main__":
         "./data/knowledge_sets",
         f"knowledge_{args.model_name.replace('.pth', '.csv')}"
     )
-    unseen_csv = os.path.join(
-        "./data/unseen_sets",
-        "unseen_dataset.csv"
-    )
+
+    # Determinar modo desde el nombre del modelo (_fg_ = fine-grained, _sc_ = superclass)
+    # Compatibilidad retroactiva: si no tiene sufijo de modo, asume superclass
+    if "_fg_" in args.model_name.lower():
+        mode_short = "fg"
+    else:
+        mode_short = "sc"
+    unseen_csv_name = f"unseen_{mode_short}.csv"
+    unseen_csv = os.path.join("./data/unseen_sets", unseen_csv_name)
+
+    # Compatibilidad con modelos anteriores al cambio de naming
+    if not os.path.exists(unseen_csv):
+        legacy_path = os.path.join("./data/unseen_sets", "unseen_dataset.csv")
+        if os.path.exists(legacy_path):
+            print(f"[WARN] {unseen_csv_name} no encontrado; usando legacy unseen_dataset.csv")
+            unseen_csv = legacy_path
 
     out_dir = "./outputs/embeddings"
     os.makedirs(out_dir, exist_ok=True)

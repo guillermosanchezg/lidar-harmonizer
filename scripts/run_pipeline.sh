@@ -32,12 +32,19 @@ if [ -n "$TRIPLET_ALPHA" ]; then
     ALPHA_FLAG="--triplet_alpha $TRIPLET_ALPHA"
 fi
 
-# Patrón de búsqueda del .pth en función de si se especificó alpha
+# Sufijo de modo
+if [ "$MODE" == "fine_grained" ]; then
+    MODE_SHORT="fg"
+else
+    MODE_SHORT="sc"
+fi
+
+# Patrón de búsqueda del .pth: incluye modo para no confundir sc y fg
 if [ -n "$TRIPLET_ALPHA" ]; then
     ALPHA_LABEL=$(printf "%.1f" "$TRIPLET_ALPHA")
-    PTH_PATTERN="${MODEL_TYPE}_${LATENT_DIM}d_a${ALPHA_LABEL}_*.pth"
+    PTH_PATTERN="${MODEL_TYPE}_${LATENT_DIM}d_a${ALPHA_LABEL}_${MODE_SHORT}_*.pth"
 else
-    PTH_PATTERN="${MODEL_TYPE}_${LATENT_DIM}d_a*_*.pth"
+    PTH_PATTERN="${MODEL_TYPE}_${LATENT_DIM}d_a*_${MODE_SHORT}_*.pth"
 fi
 
 echo "========================================================"

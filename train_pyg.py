@@ -71,7 +71,7 @@ class EarlyStopping:
 def train_model(data, labels, gantry_distances, paths,
                 unique_labels, label_to_idx, idx_to_label, num_classes,
                 epochs, batch_size, learning_rate, model_type, feature_size,
-                triplet_alpha):
+                triplet_alpha, mode_short="sc"):
 
     filtered_combined_labels = [f"{d}_{l}" for d, l in zip(gantry_distances, labels)]
     combined_counter  = Counter(filtered_combined_labels)
@@ -241,10 +241,11 @@ def train_model(data, labels, gantry_distances, paths,
         model.load_state_dict(best_model_wts)
 
     # ==========================================
-    # NOMBRE DEL MODELO (incluye alpha para no sobrescribir entre configs)
+    # NOMBRE DEL MODELO — incluye alpha y modo para no sobrescribir configs
+    # formato: {type}_{dim}d_a{alpha}_{mode}_{timestamp}.pth
     # ==========================================
     timestamp  = time.strftime("%Y%m%d-%H%M%S")
-    model_name = f"{model_type}_{feature_size}d_a{triplet_alpha:.1f}_{timestamp}.pth"
+    model_name = f"{model_type}_{feature_size}d_a{triplet_alpha:.1f}_{mode_short}_{timestamp}.pth"
 
     # Reporte final
     print("\n" + "=" * 50)
@@ -316,6 +317,7 @@ def train_model(data, labels, gantry_distances, paths,
     training_stats["model_hyperparameters"]   = MODEL_HYPERPARAMETERS
     training_stats["training_hyperparameters"] = TRAINING_HYPERPARAMETERS
     training_stats["training_mode"]           = params.get("TRAINING_MODE", "fine_grained")
+    training_stats["mode_short"]              = mode_short
     training_stats["seed"]                    = SEED
 
     stats_dir = "./outputs/stats"
@@ -358,69 +360,88 @@ if __name__ == "__main__":
     print("Cargando datos...")
     data, raw_labels, paths, gantry_distances = iterate_dataset(dataset_path)
 
-    filtered_data, filtered_labels, filtered_paths, filtered_gantry = [], [], [], []
-
     TRAINING_MODE = params.get("TRAINING_MODE", "fine_grained")
-    print(f"Modo: {TRAINING_MODE.upper()}")
+    mode_short    = "sc" if TRAINING_MODE == "superclass" else "fg"
+    print(f"Modo: {TRAINING_MODE.upper()} ({mode_short})")
 
+    # -----------------------------------------------------------------
+    # 1. Filtrado con clases ORIGINALES (igual para ambos modos)
+    #    SUPERCLASS_MAPPING y SELECTED_CLASSES cubren exactamente las
+    #    mismas clases en nuestro dataset.
+    # -----------------------------------------------------------------
+    valid_classes_for_split = set(str(k) for k in params["SUPERCLASS_MAPPING"].keys())
+
+    filt_data, filt_orig_labels, filt_paths, filt_gantry = [], [], [], []
+    for pc, lbl, path, gantry in zip(data, raw_labels, paths, gantry_distances):
+        if str(lbl) in valid_classes_for_split:
+            filt_data.append(pc)
+            filt_orig_labels.append(str(lbl))   # clase ORIGINAL: "2", "13", etc.
+            filt_paths.append(path)
+            filt_gantry.append(gantry)
+
+    print(f"Filtrado: {len(filt_data)} nubes (clases originales: {sorted(set(filt_orig_labels), key=int)})")
+
+    # -----------------------------------------------------------------
+    # 2. Mapeo de clases según TRAINING_MODE
+    # -----------------------------------------------------------------
     if TRAINING_MODE == "superclass":
-        mapper = {str(k): int(v) for k, v in params["SUPERCLASS_MAPPING"].items()}
-        names  = {int(k): str(v) for k, v in params["SUPERCLASS_NAMES"].items()}
-        for pc, lbl, path, gantry in zip(data, raw_labels, paths, gantry_distances):
-            if str(lbl) in mapper:
-                filtered_data.append(pc)
-                filtered_labels.append(mapper[str(lbl)])
-                filtered_paths.append(path)
-                filtered_gantry.append(gantry)
-        label_to_idx = mapper
-        idx_to_label = names
+        mapper       = {str(k): int(v) for k, v in params["SUPERCLASS_MAPPING"].items()}
+        names        = {int(k): str(v) for k, v in params["SUPERCLASS_NAMES"].items()}
+        label_to_idx = mapper           # str orig → int superclass
+        idx_to_label = names            # int superclass → name
         num_classes  = len(set(mapper.values()))
-    else:
-        valid_classes = [str(c) for c in params["SELECTED_CLASSES"]]
-        names = {str(k): str(v) for k, v in params["CLASS_NAME_MAPPING"].items()}
-        raw_filtered_labels = []
-        for pc, lbl, path, gantry in zip(data, raw_labels, paths, gantry_distances):
-            if str(lbl) in valid_classes:
-                filtered_data.append(pc)
-                raw_filtered_labels.append(str(lbl))
-                filtered_paths.append(path)
-                filtered_gantry.append(gantry)
-        unique_original = sorted(set(raw_filtered_labels), key=lambda x: int(x) if x.isdigit() else x)
-        label_to_idx    = {orig: net for net, orig in enumerate(unique_original)}
-        filtered_labels = [label_to_idx[l] for l in raw_filtered_labels]
-        idx_to_label    = {net: names.get(orig, orig) for orig, net in label_to_idx.items()}
-        num_classes     = len(unique_original)
+    else:  # fine_grained
+        eng_names    = {str(k): str(v) for k, v in params.get("ENGLISH_CLASS_NAMES", params["CLASS_NAME_MAPPING"]).items()}
+        unique_orig  = sorted(set(filt_orig_labels), key=int)
+        label_to_idx = {orig: net for net, orig in enumerate(unique_orig)}  # str orig → int fg
+        idx_to_label = {net: eng_names.get(orig, orig) for orig, net in label_to_idx.items()}
+        num_classes  = len(unique_orig)
 
-    print(f"Filtrado: {len(filtered_data)} nubes.")
+    # -----------------------------------------------------------------
+    # 3. Split persistido (siempre con clases ORIGINALES)
+    # -----------------------------------------------------------------
     max_instances = TRAINING_HYPERPARAMETERS["max_instances"]
 
-    # ---------- Split persistido ----------
     knowledge_indices, unseen_indices = load_or_create_split(
-        filtered_data, filtered_labels, filtered_paths, filtered_gantry,
+        filt_data, filt_orig_labels, filt_paths, filt_gantry,
         seed=SEED, percentage=0.7,
         split_path="./data/splits/split.csv"
     )
 
-    # Submuestrear Knowledge a max_instances (Unseen siempre intacto)
-    knowledge_indices = subsample_knowledge(knowledge_indices, filtered_labels, max_instances, seed=SEED)
+    # Filtrar índices cuya clase original no está en el mapeo actual
+    # (en la práctica nunca ocurre, pero es defensivo)
+    knowledge_indices = [i for i in knowledge_indices if filt_orig_labels[i] in label_to_idx]
+    unseen_indices    = [i for i in unseen_indices    if filt_orig_labels[i] in label_to_idx]
 
-    balanced_data     = [filtered_data[i]   for i in knowledge_indices]
-    balanced_labels   = [filtered_labels[i] for i in knowledge_indices]
-    balanced_paths    = [filtered_paths[i]  for i in knowledge_indices]
-    balanced_gantry   = [filtered_gantry[i] for i in knowledge_indices]
+    # Construir array de etiquetas mapeadas para subsample_knowledge
+    mapped_labels_full = [label_to_idx.get(filt_orig_labels[i], -1)
+                          for i in range(len(filt_orig_labels))]
 
-    unseen_data    = [filtered_data[i]   for i in unseen_indices]
-    unseen_labels  = [filtered_labels[i] for i in unseen_indices]
-    unseen_paths   = [filtered_paths[i]  for i in unseen_indices]
-    unseen_gantries = [filtered_gantry[i] for i in unseen_indices]
+    # Submuestrear Knowledge a max_instances por clase mapeada (Unseen intacto)
+    knowledge_indices = subsample_knowledge(
+        knowledge_indices, mapped_labels_full, max_instances, seed=SEED
+    )
 
-    # Guardar Unseen CSV (siempre el mismo)
+    balanced_data   = [filt_data[i]    for i in knowledge_indices]
+    balanced_labels = [mapped_labels_full[i] for i in knowledge_indices]
+    balanced_paths  = [filt_paths[i]   for i in knowledge_indices]
+    balanced_gantry = [filt_gantry[i]  for i in knowledge_indices]
+
+    unseen_data     = [filt_data[i]    for i in unseen_indices]
+    unseen_labels   = [mapped_labels_full[i] for i in unseen_indices]
+    unseen_paths    = [filt_paths[i]   for i in unseen_indices]
+    unseen_gantries = [filt_gantry[i]  for i in unseen_indices]
+
+    # -----------------------------------------------------------------
+    # 4. Guardar Unseen CSV (por modo, para no mezclar etiquetas sc/fg)
+    # -----------------------------------------------------------------
     unseen_dir = "./data/unseen_sets/"
     os.makedirs(unseen_dir, exist_ok=True)
+    unseen_csv_name = f"unseen_{mode_short}.csv"
     pd.DataFrame({"Path": unseen_paths, "Mapped Label": unseen_labels}).to_csv(
-        os.path.join(unseen_dir, "unseen_dataset.csv"), index=False
+        os.path.join(unseen_dir, unseen_csv_name), index=False
     )
-    print(f"[!] Unseen guardado: {len(unseen_paths)} muestras")
+    print(f"[!] Unseen ({mode_short}) guardado: {len(unseen_paths)} muestras → {unseen_csv_name}")
 
     train_model(
         balanced_data, balanced_labels, balanced_gantry, balanced_paths,
@@ -431,4 +452,5 @@ if __name__ == "__main__":
         model_type=args.model_type,
         feature_size=MODEL_HYPERPARAMETERS["feature_vector_size"],
         triplet_alpha=triplet_alpha,
+        mode_short=mode_short,
     )

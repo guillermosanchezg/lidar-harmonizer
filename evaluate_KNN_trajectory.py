@@ -117,10 +117,11 @@ def get_metrics_for_method(data, pred_col, tp_col, idx_to_name_map):
 
         human_name = idx_to_name_map.get(label, str(label))
         class_metrics[human_name] = {
-            "precision": precision,
-            "recall": recall,
-            "f1": f1,
-            "total_queries": total_queries
+            "precision":     precision,
+            "recall":        recall,
+            "f1":            f1,
+            "support":       total_queries,
+            "total_queries": total_queries,
         }
 
         w = total_queries / total_samples

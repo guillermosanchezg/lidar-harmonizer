@@ -161,23 +161,38 @@ def set_global_seed(seed: int):
         torch.cuda.manual_seed_all(seed)
 
 
-def load_or_create_split(data, labels, paths, gantry_distances,
+def load_or_create_split(data, original_labels, paths, gantry_distances,
                           seed=42, percentage=0.7,
                           split_path="./data/splits/split.csv"):
     """
     Carga el split canónico desde disco o lo genera y persiste.
 
+    IMPORTANTE: `original_labels` debe contener los IDs de clase ORIGINALES
+    (strings como "2", "13", etc.), NUNCA los índices mapeados a superclase
+    o fine-grained.  Esto garantiza que el mismo split.csv es reutilizable
+    en ambos modos sin regenerarlo.
+
     El Unseen se fija como el complementario de un split porcentual puro
-    (max_instances=∞), de modo que es IDÉNTICO para cualquier valor de
-    max_instances con el que luego se entrene.  Para reducir el Knowledge
-    a N instancias por clase, llama a subsample_knowledge() a posteriori.
+    (70/30 por clase original, sin cap de max_instances), de modo que es
+    IDÉNTICO para cualquier valor de max_instances y cualquier TRAINING_MODE.
+    Para reducir el Knowledge a N instancias, llama a subsample_knowledge().
 
     Devuelve (knowledge_indices, unseen_indices) como listas de índices
-    en los arrays data/labels/paths recibidos.
+    en los arrays data/original_labels/paths recibidos.
     """
     if os.path.exists(split_path):
-        print(f"[Split] Cargando split existente desde {split_path}...")
         df = pd.read_csv(split_path)
+
+        # Detectar formato antiguo (columna 'label' = superclase mapeada)
+        if "label" in df.columns and "original_label" not in df.columns:
+            raise ValueError(
+                f"\n[Split] ❌  FORMATO ANTIGUO detectado en {split_path}.\n"
+                "  El fichero guardaba la superclase mapeada (0-5) en lugar\n"
+                "  de la clase original (2-19).  Bórralo y vuelve a ejecutar:\n"
+                f"    rm {split_path}\n"
+            )
+
+        print(f"[Split] Cargando split existente desde {split_path}...")
         path_to_idx = {p: i for i, p in enumerate(paths)}
         knowledge_indices, unseen_indices = [], []
         missing = 0
@@ -203,7 +218,7 @@ def load_or_create_split(data, labels, paths, gantry_distances,
     grouped = defaultdict(lambda: defaultdict(list))
     for i, path in enumerate(paths):
         event_id = get_event_id(path)
-        grouped[labels[i]][event_id].append(i)
+        grouped[original_labels[i]][event_id].append(i)   # agrupación por clase ORIGINAL
 
     knowledge_indices, unseen_indices = [], []
 
@@ -212,8 +227,7 @@ def load_or_create_split(data, labels, paths, gantry_distances,
         random.shuffle(folders)
 
         total_pcds = sum(len(v) for v in time_folders.values())
-        # Split puro por porcentaje (sin cap de max_instances)
-        target_train = int(total_pcds * percentage)
+        target_train = int(total_pcds * percentage)   # split porcentual puro
 
         current = 0
         train_set = set()
@@ -228,11 +242,13 @@ def load_or_create_split(data, labels, paths, gantry_distances,
             if folder not in train_set:
                 unseen_indices.extend(time_folders[folder])
 
-    # Persistir
+    # Persistir con clase ORIGINAL
     os.makedirs(os.path.dirname(split_path), exist_ok=True)
     rows = (
-        [{"path": paths[i], "label": labels[i], "split": "knowledge"} for i in knowledge_indices] +
-        [{"path": paths[i], "label": labels[i], "split": "unseen"}    for i in unseen_indices]
+        [{"path": paths[i], "original_label": original_labels[i], "split": "knowledge"}
+         for i in knowledge_indices] +
+        [{"path": paths[i], "original_label": original_labels[i], "split": "unseen"}
+         for i in unseen_indices]
     )
     pd.DataFrame(rows).to_csv(split_path, index=False)
     print(f"[Split] Guardado en {split_path}: {len(knowledge_indices)} knowledge | {len(unseen_indices)} unseen")
