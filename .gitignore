@@ -19,3 +19,6 @@ point_counts_by_gantry_and_class/
 *.csv
 *.pth
 
+
+# Split experimental (excepción a *.csv)
+!data/splits/split*.csv
