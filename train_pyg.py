@@ -315,7 +315,10 @@ def train_model(data, labels, gantry_distances, paths,
     training_stats["class_distribution"]      = {str(idx_to_label[int(l)]): cnt for l, cnt in Counter(all_labels_ep).items()}
     training_stats["best_accuracy"]           = best_acc
     training_stats["model_hyperparameters"]   = MODEL_HYPERPARAMETERS
-    training_stats["training_hyperparameters"] = TRAINING_HYPERPARAMETERS
+    # Mezclar params.yaml con los valores reales usados (max_instances puede venir de CLI)
+    effective_hp = dict(TRAINING_HYPERPARAMETERS)
+    effective_hp["max_instances"] = max_instances
+    training_stats["training_hyperparameters"] = effective_hp
     training_stats["training_mode"]           = params.get("TRAINING_MODE", "fine_grained")
     training_stats["mode_short"]              = mode_short
     training_stats["seed"]                    = SEED
