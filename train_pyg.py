@@ -315,9 +315,11 @@ def train_model(data, labels, gantry_distances, paths,
     training_stats["class_distribution"]      = {str(idx_to_label[int(l)]): cnt for l, cnt in Counter(all_labels_ep).items()}
     training_stats["best_accuracy"]           = best_acc
     training_stats["model_hyperparameters"]   = MODEL_HYPERPARAMETERS
-    # Mezclar params.yaml con los valores reales usados (max_instances puede venir de CLI)
+    # Mezclar params.yaml con los valores reales usados (max_instances y batch_size
+    # pueden venir de CLI o de un default por modelo)
     effective_hp = dict(TRAINING_HYPERPARAMETERS)
     effective_hp["max_instances"] = max_instances
+    effective_hp["batch_size"]    = batch_size
     training_stats["training_hyperparameters"] = effective_hp
     training_stats["training_mode"]           = params.get("TRAINING_MODE", "fine_grained")
     training_stats["mode_short"]              = mode_short
@@ -351,6 +353,9 @@ if __name__ == "__main__":
                              "0 = CE-only puro (sin mining).")
     parser.add_argument("--max_instances", type=int, default=None,
                         help="Máximo de instancias por clase en Knowledge (sobreescribe params.yaml).")
+    parser.add_argument("--batch_size", type=int, default=None,
+                        help="Batch size de entrenamiento (sobreescribe params.yaml). "
+                             "PointMLP necesita un valor menor por su k-NN denso.")
     args = parser.parse_args()
 
     # Alpha: CLI > params.yaml > default 0.5
@@ -409,6 +414,17 @@ if __name__ == "__main__":
                      if args.max_instances is not None
                      else TRAINING_HYPERPARAMETERS["max_instances"])
 
+    # Batch size: CLI > default por modelo > params.yaml.
+    # PointMLP usa k-NN denso (k=32) y materializa varias copias [E, out_ch]
+    # por stage, por lo que necesita un batch menor para no agotar la VRAM.
+    if args.batch_size is not None:
+        batch_size = args.batch_size
+    elif args.model_type == "pointmlp":
+        batch_size = 16
+    else:
+        batch_size = TRAINING_HYPERPARAMETERS["batch_size"]
+    print(f"Batch size efectivo: {batch_size} (modelo: {args.model_type})")
+
     knowledge_indices, unseen_indices = load_or_create_split(
         filt_data, filt_orig_labels, filt_paths, filt_gantry,
         seed=SEED, percentage=0.7,
@@ -454,7 +470,7 @@ if __name__ == "__main__":
         balanced_data, balanced_labels, balanced_gantry, balanced_paths,
         list(idx_to_label.keys()), label_to_idx, idx_to_label, num_classes,
         epochs=TRAINING_HYPERPARAMETERS["epochs"],
-        batch_size=TRAINING_HYPERPARAMETERS["batch_size"],
+        batch_size=batch_size,
         learning_rate=TRAINING_HYPERPARAMETERS["learning_rate"],
         model_type=args.model_type,
         feature_size=MODEL_HYPERPARAMETERS["feature_vector_size"],
