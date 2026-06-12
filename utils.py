@@ -225,39 +225,30 @@ def balance_dataset(data, labels, paths, gantry_distances, max_instances=1000, p
 
 def plot_confusion_matrix(y_true, y_pred, classes, model_name, save_dir, label_mapping=None):
     """
-    Genera y guarda una matriz de confusión con etiquetas originales en los ejes.
-
-    Args:
-        y_true (list): Etiquetas reales.
-        y_pred (list): Etiquetas predichas.
-        classes (list): Lista de clases originales.
-        model_name (str): Nombre del modelo.
-        save_dir (str): Directorio para guardar la matriz de confusión.
-        label_mapping (dict): Mapeo de etiquetas originales a índices (opcional).
+    Genera y guarda una matriz de confusión con etiquetas en inglés.
     """
-    # Ordenar las clases para asegurar consistencia en los ejes
     if label_mapping:
         idx_to_label = {v: k for k, v in label_mapping.items()}
-        # Ordenar las clases de forma numérica basándose en etiquetas originales
-        sorted_classes = sorted(classes, key=lambda idx: int(idx_to_label[idx]))
-        display_labels = [idx_to_label[idx] for idx in sorted_classes]
+        sorted_classes = sorted(classes, key=lambda idx: int(idx))
+        display_labels = [idx_to_label[idx] if idx in idx_to_label else str(idx) for idx in sorted_classes]
     else:
-        # Si no hay mapeo, simplemente ordena las clases como enteros
-        sorted_classes = sorted(classes, key=int)
-        display_labels = sorted_classes
+        sorted_classes = sorted(classes, key=lambda x: int(x))
+        display_labels = [str(c) for c in sorted_classes]
 
-    # Crear la matriz de confusión con las clases ordenadas
     cm = confusion_matrix(y_true, y_pred, labels=sorted_classes)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=display_labels)
-    disp.plot(cmap=plt.cm.Blues)
+    disp.plot(cmap=plt.cm.Blues, values_format='d')
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
     save_path = os.path.join(save_dir, f"{model_name}.png")
+    plt.title("Confusion Matrix")
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
     plt.savefig(save_path, bbox_inches="tight")
     print(f"Matriz de confusión guardada en {save_path}")
-    plt.title("Matriz de Confusión")
+    plt.close()
 
 
 def load_config(file_path):

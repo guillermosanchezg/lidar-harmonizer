@@ -1,0 +1,2323 @@
+{
+    "best_k_inverse": 2,
+    "best_k_squared": 2,
+    "best_k_gantry": 2,
+    "metrics_inverse": {
+        "2": {
+            "majority": {
+                "accuracy": 0.9995523210432068,
+                "weighted_f1": 0.9995379980361212,
+                "average_f1": 0.9617589864948802,
+                "average_precision": 0.9943815447991112,
+                "average_recall": 0.9354905177025304,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9931972789115646,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9878213802435724,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9967148488830486,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9981904918572133,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8021978021978022,
+                        "f1": 0.8902439024390244,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9995523210432068,
+                "weighted_f1": 0.9995379980361212,
+                "average_f1": 0.9617589864948802,
+                "average_precision": 0.9943815447991112,
+                "average_recall": 0.9354905177025304,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9931972789115646,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9878213802435724,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9967148488830486,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9981904918572133,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8021978021978022,
+                        "f1": 0.8902439024390244,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "3": {
+            "majority": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994526051978866,
+                "average_f1": 0.9494492785815485,
+                "average_precision": 0.9782217007301298,
+                "average_recall": 0.9268240278027967,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994526051978866,
+                "average_f1": 0.9494492785815485,
+                "average_precision": 0.9782217007301298,
+                "average_recall": 0.9268240278027967,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "4": {
+            "majority": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994526051978866,
+                "average_f1": 0.9494492785815485,
+                "average_precision": 0.9782217007301298,
+                "average_recall": 0.9268240278027967,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994526051978866,
+                "average_f1": 0.9494492785815485,
+                "average_precision": 0.9782217007301298,
+                "average_recall": 0.9268240278027967,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "5": {
+            "majority": {
+                "accuracy": 0.999449010514716,
+                "weighted_f1": 0.9994261289388396,
+                "average_f1": 0.9470221358734566,
+                "average_precision": 0.9781671818244323,
+                "average_recall": 0.9231610241397931,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.999449010514716,
+                "weighted_f1": 0.9994261289388396,
+                "average_f1": 0.9470221358734566,
+                "average_precision": 0.9781671818244323,
+                "average_recall": 0.9231610241397931,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "6": {
+            "majority": {
+                "accuracy": 0.999449010514716,
+                "weighted_f1": 0.9994261289388396,
+                "average_f1": 0.9470221358734566,
+                "average_precision": 0.9781671818244323,
+                "average_recall": 0.9231610241397931,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.999449010514716,
+                "weighted_f1": 0.9994261289388396,
+                "average_f1": 0.9470221358734566,
+                "average_precision": 0.9781671818244323,
+                "average_recall": 0.9231610241397931,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "7": {
+            "majority": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994130062827683,
+                "average_f1": 0.9453779570778574,
+                "average_precision": 0.9773403219303903,
+                "average_recall": 0.9213295223082912,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9711286089238845,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9814323607427056,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994130062827683,
+                "average_f1": 0.9453779570778574,
+                "average_precision": 0.9773403219303903,
+                "average_recall": 0.9213295223082912,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9711286089238845,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9814323607427056,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "8": {
+            "majority": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994130062827683,
+                "average_f1": 0.9453779570778574,
+                "average_precision": 0.9773403219303903,
+                "average_recall": 0.9213295223082912,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9711286089238845,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9814323607427056,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994130062827683,
+                "average_f1": 0.9453779570778574,
+                "average_precision": 0.9773403219303903,
+                "average_recall": 0.9213295223082912,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9711286089238845,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9814323607427056,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "9": {
+            "majority": {
+                "accuracy": 0.9994260526194958,
+                "weighted_f1": 0.999391745589837,
+                "average_f1": 0.9481535797254853,
+                "average_precision": 0.9937625164449013,
+                "average_recall": 0.9153439975560104,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9998997644464491,
+                        "recall": 1.0,
+                        "f1": 0.9999498797113071,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9957335083688874,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9976981256165735,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.6813186813186813,
+                        "f1": 0.8104575163398693,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9994260526194958,
+                "weighted_f1": 0.999391745589837,
+                "average_f1": 0.9481535797254853,
+                "average_precision": 0.9937625164449013,
+                "average_recall": 0.9153439975560104,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9998997644464491,
+                        "recall": 1.0,
+                        "f1": 0.9999498797113071,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9957335083688874,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9976981256165735,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.6813186813186813,
+                        "f1": 0.8104575163398693,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "10": {
+            "majority": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994055297077534,
+                "average_f1": 0.9494546345835144,
+                "average_precision": 0.9937897535341395,
+                "average_recall": 0.9171754993875122,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9998997644464491,
+                        "recall": 1.0,
+                        "f1": 0.9999498797113071,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9958969309043164,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9977801529227988,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.6923076923076923,
+                        "f1": 0.8181818181818181,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            },
+            "inverse_distance": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994055297077534,
+                "average_f1": 0.9494546345835144,
+                "average_precision": 0.9937897535341395,
+                "average_recall": 0.9171754993875122,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9998997644464491,
+                        "recall": 1.0,
+                        "f1": 0.9999498797113071,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9958969309043164,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9977801529227988,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.6923076923076923,
+                        "f1": 0.8181818181818181,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        }
+    },
+    "metrics_squared": {
+        "2": {
+            "squared_distance": {
+                "accuracy": 0.9995523210432068,
+                "weighted_f1": 0.9995379980361212,
+                "average_f1": 0.9617589864948802,
+                "average_precision": 0.9943815447991112,
+                "average_recall": 0.9354905177025304,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9931972789115646,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9878213802435724,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9967148488830486,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9981904918572133,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8021978021978022,
+                        "f1": 0.8902439024390244,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "3": {
+            "squared_distance": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994526051978866,
+                "average_f1": 0.9494492785815485,
+                "average_precision": 0.9782217007301298,
+                "average_recall": 0.9268240278027967,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "4": {
+            "squared_distance": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994526051978866,
+                "average_f1": 0.9494492785815485,
+                "average_precision": 0.9782217007301298,
+                "average_recall": 0.9268240278027967,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "5": {
+            "squared_distance": {
+                "accuracy": 0.999449010514716,
+                "weighted_f1": 0.9994261289388396,
+                "average_f1": 0.9470221358734566,
+                "average_precision": 0.9781671818244323,
+                "average_recall": 0.9231610241397931,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "6": {
+            "squared_distance": {
+                "accuracy": 0.999449010514716,
+                "weighted_f1": 0.9994261289388396,
+                "average_f1": 0.9470221358734566,
+                "average_precision": 0.9781671818244323,
+                "average_recall": 0.9231610241397931,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9762532981530343,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9840425531914894,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "7": {
+            "squared_distance": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994130062827683,
+                "average_f1": 0.9453779570778574,
+                "average_precision": 0.9773403219303903,
+                "average_recall": 0.9213295223082912,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9711286089238845,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9814323607427056,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "8": {
+            "squared_distance": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994130062827683,
+                "average_f1": 0.9453779570778574,
+                "average_precision": 0.9773403219303903,
+                "average_recall": 0.9213295223082912,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9711286089238845,
+                        "recall": 0.9919571045576407,
+                        "f1": 0.9814323607427056,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.90625,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.8656716417910447,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "9": {
+            "squared_distance": {
+                "accuracy": 0.9994260526194958,
+                "weighted_f1": 0.9993920000979889,
+                "average_f1": 0.9477458387771117,
+                "average_precision": 0.992969395580423,
+                "average_recall": 0.9153439975560104,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9998997644464491,
+                        "recall": 1.0,
+                        "f1": 0.9999498797113071,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9713541666666666,
+                        "recall": 1.0,
+                        "f1": 0.9854689564068693,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.6813186813186813,
+                        "f1": 0.8104575163398693,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "10": {
+            "squared_distance": {
+                "accuracy": 0.9994375315671059,
+                "weighted_f1": 0.9994057860959049,
+                "average_f1": 0.949046898132067,
+                "average_precision": 0.9929966505579059,
+                "average_recall": 0.9171754993875122,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9998997644464491,
+                        "recall": 1.0,
+                        "f1": 0.9999498797113071,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9713541666666666,
+                        "recall": 1.0,
+                        "f1": 0.9854689564068693,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.6923076923076923,
+                        "f1": 0.8181818181818181,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        }
+    },
+    "metrics_gantry": {
+        "2": {
+            "gantry": {
+                "accuracy": 0.9995523210432068,
+                "weighted_f1": 0.9995379980361212,
+                "average_f1": 0.9617589864948802,
+                "average_precision": 0.9943815447991112,
+                "average_recall": 0.9354905177025304,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9931972789115646,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9878213802435724,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9967148488830486,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9981904918572133,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8021978021978022,
+                        "f1": 0.8902439024390244,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "3": {
+            "gantry": {
+                "accuracy": 0.9995064052527665,
+                "weighted_f1": 0.9994861927430103,
+                "average_f1": 0.9568851577842387,
+                "average_precision": 0.9938777828006101,
+                "average_recall": 0.9281645103765231,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "4": {
+            "gantry": {
+                "accuracy": 0.9995064052527665,
+                "weighted_f1": 0.9994861927430103,
+                "average_f1": 0.9568851577842387,
+                "average_precision": 0.9938777828006101,
+                "average_recall": 0.9281645103765231,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7582417582417582,
+                        "f1": 0.8624999999999999,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "5": {
+            "gantry": {
+                "accuracy": 0.9994834473575462,
+                "weighted_f1": 0.9994597164839634,
+                "average_f1": 0.9544580150761468,
+                "average_precision": 0.9938232638949126,
+                "average_recall": 0.9245015067135195,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "6": {
+            "gantry": {
+                "accuracy": 0.9994604894623261,
+                "weighted_f1": 0.9994331128347959,
+                "average_f1": 0.9515616073626038,
+                "average_precision": 0.9929756599100377,
+                "average_recall": 0.9208385030505158,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9713541666666666,
+                        "recall": 1.0,
+                        "f1": 0.9854689564068693,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7142857142857143,
+                        "f1": 0.8333333333333333,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "7": {
+            "gantry": {
+                "accuracy": 0.9994604894623261,
+                "weighted_f1": 0.9994331128347959,
+                "average_f1": 0.9515616073626038,
+                "average_precision": 0.9929756599100377,
+                "average_recall": 0.9208385030505158,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9960604070912672,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9978621937181384,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9713541666666666,
+                        "recall": 1.0,
+                        "f1": 0.9854689564068693,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7142857142857143,
+                        "f1": 0.8333333333333333,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "8": {
+            "gantry": {
+                "accuracy": 0.9994834473575462,
+                "weighted_f1": 0.9994599747525783,
+                "average_f1": 0.9540502831227351,
+                "average_precision": 0.9930301788157351,
+                "average_recall": 0.9245015067135195,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9963875205254515,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9980263157894738,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9713541666666666,
+                        "recall": 1.0,
+                        "f1": 0.9854689564068693,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7362637362637363,
+                        "f1": 0.8481012658227849,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "9": {
+            "gantry": {
+                "accuracy": 0.9994604894623261,
+                "weighted_f1": 0.999432858326644,
+                "average_f1": 0.9519693483109773,
+                "average_precision": 0.993768780774516,
+                "average_recall": 0.9208385030505158,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9957335083688874,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9976981256165735,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9764397905759162,
+                        "recall": 1.0,
+                        "f1": 0.9880794701986755,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7142857142857143,
+                        "f1": 0.8333333333333333,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        },
+        "10": {
+            "gantry": {
+                "accuracy": 0.9994719684099361,
+                "weighted_f1": 0.9994465924520145,
+                "average_f1": 0.9528137827233771,
+                "average_precision": 0.9930029148875207,
+                "average_recall": 0.9226700048820177,
+                "class_metrics": {
+                    "Passenger Car": {
+                        "precision": 0.9999373504241377,
+                        "recall": 1.0,
+                        "f1": 0.9999686742307957,
+                        "total_queries": 79804
+                    },
+                    "Van": {
+                        "precision": 0.9905020352781547,
+                        "recall": 0.9825033647375505,
+                        "f1": 0.9864864864864866,
+                        "total_queries": 743
+                    },
+                    "Bus": {
+                        "precision": 0.9962239369561648,
+                        "recall": 0.999670510708402,
+                        "f1": 0.9979442480059206,
+                        "total_queries": 6070
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9713541666666666,
+                        "recall": 1.0,
+                        "f1": 0.9854689564068693,
+                        "total_queries": 373
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.8285714285714286,
+                        "f1": 0.90625,
+                        "total_queries": 35
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.7252747252747253,
+                        "f1": 0.840764331210191,
+                        "total_queries": 91
+                    }
+                },
+                "ignoring_car_to_van_errors": 0
+            }
+        }
+    },
+    "gantry_breakdown_for_best_k": {
+        "inverse": {
+            "-13.68m": {
+                "weighted_f1": 0.9997633869645358,
+                "accuracy": 0.9998422215209846,
+                "total_queries": 19014,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9998929049531459,
+                        "recall": 1.0,
+                        "f1": 0.9999464496090822,
+                        "total_queries": 18673
+                    },
+                    "Van": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 63
+                    },
+                    "Bus": {
+                        "precision": 0.9960629921259843,
+                        "recall": 1.0,
+                        "f1": 0.9980276134122288,
+                        "total_queries": 253
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 22
+                    },
+                    "Other Vehicles": {
+                        "precision": 0.0,
+                        "recall": 0.0,
+                        "f1": 0.0,
+                        "total_queries": 3
+                    }
+                }
+            },
+            "-8.68m": {
+                "weighted_f1": 0.9993828758634095,
+                "accuracy": 0.9994140143103873,
+                "total_queries": 32424,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9999340608618246,
+                        "recall": 1.0,
+                        "f1": 0.9999670293438839,
+                        "total_queries": 30329
+                    },
+                    "Van": {
+                        "precision": 0.9945205479452055,
+                        "recall": 0.9784366576819407,
+                        "f1": 0.986413043478261,
+                        "total_queries": 371
+                    },
+                    "Bus": {
+                        "precision": 0.9928338762214983,
+                        "recall": 0.999344262295082,
+                        "f1": 0.9960784313725489,
+                        "total_queries": 1525
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.976878612716763,
+                        "recall": 1.0,
+                        "f1": 0.9883040935672515,
+                        "total_queries": 169
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.6,
+                        "f1": 0.7499999999999999,
+                        "total_queries": 5
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.68,
+                        "f1": 0.8095238095238095,
+                        "total_queries": 25
+                    }
+                }
+            },
+            "-3.68m": {
+                "weighted_f1": 0.9993546215068793,
+                "accuracy": 0.999366152545954,
+                "total_queries": 23665,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9999475478625754,
+                        "recall": 1.0,
+                        "f1": 0.999973773243463,
+                        "total_queries": 19064
+                    },
+                    "Van": {
+                        "precision": 0.9962264150943396,
+                        "recall": 0.9814126394052045,
+                        "f1": 0.9887640449438202,
+                        "total_queries": 269
+                    },
+                    "Bus": {
+                        "precision": 0.9980401763841255,
+                        "recall": 1.0,
+                        "f1": 0.9990191270230505,
+                        "total_queries": 4074
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9709302325581395,
+                        "recall": 1.0,
+                        "f1": 0.9852507374631269,
+                        "total_queries": 167
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.896551724137931,
+                        "f1": 0.9454545454545454,
+                        "total_queries": 29
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8870967741935484,
+                        "f1": 0.9401709401709402,
+                        "total_queries": 62
+                    }
+                }
+            },
+            "3.68m": {
+                "weighted_f1": 0.9997901051541199,
+                "accuracy": 0.9998305084745762,
+                "total_queries": 11800,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 11526
+                    },
+                    "Van": {
+                        "precision": 0.9523809523809523,
+                        "recall": 1.0,
+                        "f1": 0.975609756097561,
+                        "total_queries": 40
+                    },
+                    "Bus": {
+                        "precision": 1.0,
+                        "recall": 0.9954128440366973,
+                        "f1": 0.9977011494252873,
+                        "total_queries": 218
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 14
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.0,
+                        "recall": 0.0,
+                        "f1": 0.0,
+                        "total_queries": 1
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 1
+                    }
+                }
+            },
+            "8.68m": {
+                "weighted_f1": 1.0,
+                "accuracy": 1.0,
+                "total_queries": 199,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 198
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 1
+                    }
+                }
+            },
+            "13.68m": {
+                "weighted_f1": 1.0,
+                "accuracy": 1.0,
+                "total_queries": 14,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 14
+                    }
+                }
+            }
+        },
+        "squared": {
+            "-13.68m": {
+                "weighted_f1": 0.9997633869645358,
+                "accuracy": 0.9998422215209846,
+                "total_queries": 19014,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9998929049531459,
+                        "recall": 1.0,
+                        "f1": 0.9999464496090822,
+                        "total_queries": 18673
+                    },
+                    "Van": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 63
+                    },
+                    "Bus": {
+                        "precision": 0.9960629921259843,
+                        "recall": 1.0,
+                        "f1": 0.9980276134122288,
+                        "total_queries": 253
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 22
+                    },
+                    "Other Vehicles": {
+                        "precision": 0.0,
+                        "recall": 0.0,
+                        "f1": 0.0,
+                        "total_queries": 3
+                    }
+                }
+            },
+            "-8.68m": {
+                "weighted_f1": 0.9993828758634095,
+                "accuracy": 0.9994140143103873,
+                "total_queries": 32424,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9999340608618246,
+                        "recall": 1.0,
+                        "f1": 0.9999670293438839,
+                        "total_queries": 30329
+                    },
+                    "Van": {
+                        "precision": 0.9945205479452055,
+                        "recall": 0.9784366576819407,
+                        "f1": 0.986413043478261,
+                        "total_queries": 371
+                    },
+                    "Bus": {
+                        "precision": 0.9928338762214983,
+                        "recall": 0.999344262295082,
+                        "f1": 0.9960784313725489,
+                        "total_queries": 1525
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.976878612716763,
+                        "recall": 1.0,
+                        "f1": 0.9883040935672515,
+                        "total_queries": 169
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.6,
+                        "f1": 0.7499999999999999,
+                        "total_queries": 5
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.68,
+                        "f1": 0.8095238095238095,
+                        "total_queries": 25
+                    }
+                }
+            },
+            "-3.68m": {
+                "weighted_f1": 0.9993546215068793,
+                "accuracy": 0.999366152545954,
+                "total_queries": 23665,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9999475478625754,
+                        "recall": 1.0,
+                        "f1": 0.999973773243463,
+                        "total_queries": 19064
+                    },
+                    "Van": {
+                        "precision": 0.9962264150943396,
+                        "recall": 0.9814126394052045,
+                        "f1": 0.9887640449438202,
+                        "total_queries": 269
+                    },
+                    "Bus": {
+                        "precision": 0.9980401763841255,
+                        "recall": 1.0,
+                        "f1": 0.9990191270230505,
+                        "total_queries": 4074
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9709302325581395,
+                        "recall": 1.0,
+                        "f1": 0.9852507374631269,
+                        "total_queries": 167
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.896551724137931,
+                        "f1": 0.9454545454545454,
+                        "total_queries": 29
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8870967741935484,
+                        "f1": 0.9401709401709402,
+                        "total_queries": 62
+                    }
+                }
+            },
+            "3.68m": {
+                "weighted_f1": 0.9997901051541199,
+                "accuracy": 0.9998305084745762,
+                "total_queries": 11800,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 11526
+                    },
+                    "Van": {
+                        "precision": 0.9523809523809523,
+                        "recall": 1.0,
+                        "f1": 0.975609756097561,
+                        "total_queries": 40
+                    },
+                    "Bus": {
+                        "precision": 1.0,
+                        "recall": 0.9954128440366973,
+                        "f1": 0.9977011494252873,
+                        "total_queries": 218
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 14
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.0,
+                        "recall": 0.0,
+                        "f1": 0.0,
+                        "total_queries": 1
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 1
+                    }
+                }
+            },
+            "8.68m": {
+                "weighted_f1": 1.0,
+                "accuracy": 1.0,
+                "total_queries": 199,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 198
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 1
+                    }
+                }
+            },
+            "13.68m": {
+                "weighted_f1": 1.0,
+                "accuracy": 1.0,
+                "total_queries": 14,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 14
+                    }
+                }
+            }
+        },
+        "gantry": {
+            "-13.68m": {
+                "weighted_f1": 0.9997633869645358,
+                "accuracy": 0.9998422215209846,
+                "total_queries": 19014,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9998929049531459,
+                        "recall": 1.0,
+                        "f1": 0.9999464496090822,
+                        "total_queries": 18673
+                    },
+                    "Van": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 63
+                    },
+                    "Bus": {
+                        "precision": 0.9960629921259843,
+                        "recall": 1.0,
+                        "f1": 0.9980276134122288,
+                        "total_queries": 253
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 22
+                    },
+                    "Other Vehicles": {
+                        "precision": 0.0,
+                        "recall": 0.0,
+                        "f1": 0.0,
+                        "total_queries": 3
+                    }
+                }
+            },
+            "-8.68m": {
+                "weighted_f1": 0.9993828758634095,
+                "accuracy": 0.9994140143103873,
+                "total_queries": 32424,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9999340608618246,
+                        "recall": 1.0,
+                        "f1": 0.9999670293438839,
+                        "total_queries": 30329
+                    },
+                    "Van": {
+                        "precision": 0.9945205479452055,
+                        "recall": 0.9784366576819407,
+                        "f1": 0.986413043478261,
+                        "total_queries": 371
+                    },
+                    "Bus": {
+                        "precision": 0.9928338762214983,
+                        "recall": 0.999344262295082,
+                        "f1": 0.9960784313725489,
+                        "total_queries": 1525
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.976878612716763,
+                        "recall": 1.0,
+                        "f1": 0.9883040935672515,
+                        "total_queries": 169
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.6,
+                        "f1": 0.7499999999999999,
+                        "total_queries": 5
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.68,
+                        "f1": 0.8095238095238095,
+                        "total_queries": 25
+                    }
+                }
+            },
+            "-3.68m": {
+                "weighted_f1": 0.9993546215068793,
+                "accuracy": 0.999366152545954,
+                "total_queries": 23665,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 0.9999475478625754,
+                        "recall": 1.0,
+                        "f1": 0.999973773243463,
+                        "total_queries": 19064
+                    },
+                    "Van": {
+                        "precision": 0.9962264150943396,
+                        "recall": 0.9814126394052045,
+                        "f1": 0.9887640449438202,
+                        "total_queries": 269
+                    },
+                    "Bus": {
+                        "precision": 0.9980401763841255,
+                        "recall": 1.0,
+                        "f1": 0.9990191270230505,
+                        "total_queries": 4074
+                    },
+                    "Rigid Truck": {
+                        "precision": 0.9709302325581395,
+                        "recall": 1.0,
+                        "f1": 0.9852507374631269,
+                        "total_queries": 167
+                    },
+                    "Articulated Truck": {
+                        "precision": 1.0,
+                        "recall": 0.896551724137931,
+                        "f1": 0.9454545454545454,
+                        "total_queries": 29
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 0.8870967741935484,
+                        "f1": 0.9401709401709402,
+                        "total_queries": 62
+                    }
+                }
+            },
+            "3.68m": {
+                "weighted_f1": 0.9997901051541199,
+                "accuracy": 0.9998305084745762,
+                "total_queries": 11800,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 11526
+                    },
+                    "Van": {
+                        "precision": 0.9523809523809523,
+                        "recall": 1.0,
+                        "f1": 0.975609756097561,
+                        "total_queries": 40
+                    },
+                    "Bus": {
+                        "precision": 1.0,
+                        "recall": 0.9954128440366973,
+                        "f1": 0.9977011494252873,
+                        "total_queries": 218
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 14
+                    },
+                    "Articulated Truck": {
+                        "precision": 0.0,
+                        "recall": 0.0,
+                        "f1": 0.0,
+                        "total_queries": 1
+                    },
+                    "Other Vehicles": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 1
+                    }
+                }
+            },
+            "8.68m": {
+                "weighted_f1": 1.0,
+                "accuracy": 1.0,
+                "total_queries": 199,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 198
+                    },
+                    "Rigid Truck": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 1
+                    }
+                }
+            },
+            "13.68m": {
+                "weighted_f1": 1.0,
+                "accuracy": 1.0,
+                "total_queries": 14,
+                "class_breakdown": {
+                    "Passenger Car": {
+                        "precision": 1.0,
+                        "recall": 1.0,
+                        "f1": 1.0,
+                        "total_queries": 14
+                    }
+                }
+            }
+        }
+    }
+}

@@ -3,7 +3,6 @@ import argparse
 import json
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.nn import TripletMarginLoss
 from torch.utils.data import DataLoader, Dataset
 from utils import (iterate_dataset, normalize_point_cloud, uniform_points,
@@ -11,21 +10,19 @@ from utils import (iterate_dataset, normalize_point_cloud, uniform_points,
 from models_pyg import DGCNNClassifier, PointNet2Classifier
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, precision_recall_fscore_support
 import yaml
 import time
 from collections import Counter
 import pandas as pd
 
-
 with open("params.yaml", "r") as file:
     params = yaml.safe_load(file)
-
 
 MODEL_HYPERPARAMETERS = params["MODEL_HYPERPARAMETERS"]
 TRAINING_HYPERPARAMETERS = params["TRAINING_HYPERPARAMETERS"]
 DEVICE_CONFIG = params["DEVICE_CONFIG"]
 device = torch.device(DEVICE_CONFIG["device"])
-
 
 class PointCloudDataset(Dataset):
     def __init__(self, data, labels, num_points=MODEL_HYPERPARAMETERS["num_points"]):
@@ -43,7 +40,6 @@ class PointCloudDataset(Dataset):
         point_cloud = uniform_points(point_cloud, self.num_points)
         return torch.tensor(point_cloud, dtype=torch.float32), torch.tensor(label, dtype=torch.long)
 
-
 class EarlyStopping:
     def __init__(self, patience=TRAINING_HYPERPARAMETERS["early_stopping_patience"], delta=TRAINING_HYPERPARAMETERS["early_stopping_delta"]):
         self.patience = patience
@@ -51,18 +47,19 @@ class EarlyStopping:
         self.best_loss = None
         self.counter = 0
         self.early_stop = False
+        self.stopped_epoch = 0
 
-    def __call__(self, val_loss):
+    def __call__(self, val_loss, epoch):
         if self.best_loss is None:
             self.best_loss = val_loss
         elif val_loss > self.best_loss - self.delta:
             self.counter += 1
             if self.counter >= self.patience:
                 self.early_stop = True
+                self.stopped_epoch = epoch
         else:
             self.best_loss = val_loss
             self.counter = 0
-
 
 def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_idx, idx_to_label, num_classes, epochs, batch_size, learning_rate, model_type, feature_size):
     filtered_combined_labels = [f"{distance}_{label}" for distance, label in zip(gantry_distances, labels)]
@@ -91,7 +88,7 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
     train_loader = DataLoader(PointCloudDataset(train_data, train_labels), batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(PointCloudDataset(test_data, test_labels), batch_size=batch_size, shuffle=False)
 
-    print(f"Inicializando modelo: {model_type.upper()} con vector de {feature_size} dimensiones y Joint Loss (WCE + Triplet)...")
+    print(f"\nInicializando modelo: {model_type.upper()} con vector de {feature_size} dimensiones y Joint Loss (WCE + Triplet)...")
     if model_type == "dgcnn":
         model = DGCNNClassifier(num_classes=num_classes, feature_vector_size=feature_size).to(device)
     elif model_type == "pointnet2":
@@ -101,9 +98,7 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     
-    # -------------------------------------------------------------
     # CÁLCULO DE PESOS PARA WEIGHTED CROSS-ENTROPY
-    # -------------------------------------------------------------
     train_counter = Counter(train_labels)
     total_train_samples = len(train_labels)
     
@@ -115,7 +110,7 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
             class_weights[cls_idx] = 1.0
             
     class_weights = class_weights / class_weights.sum() * num_classes
-    print(f"Pesos de Cross-Entropy por clase aplicados: {class_weights.cpu().numpy()}")
+    print(f"Pesos de Cross-Entropy por clase aplicados: {class_weights.cpu().numpy()}\n")
 
     ce_criterion = nn.CrossEntropyLoss(weight=class_weights)
     triplet_criterion = TripletMarginLoss(margin=1.0, p=2)
@@ -126,6 +121,8 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
     best_model_wts = None
     best_acc = 0
     training_stats = {"epoch_stats": [], "best_accuracy": 0}
+
+    final_epoch = epochs
 
     for epoch in range(epochs):
         model.train()
@@ -231,14 +228,20 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
               f"(CE: {train_loss_ce_acum/len(train_loader):.4f}, Trip: {train_loss_triplet_acum/len(train_loader):.4f}), "
               f"Test Loss (WCE): {test_loss / len(test_loader):.4f}, Accuracy: {accuracy:.2f}%")
 
-        early_stopping(test_loss / len(test_loader))
-        if early_stopping.early_stop:
-            print("Deteniendo entrenamiento temprano por early stopping.")
-            break
-
         if accuracy > best_acc:
             best_acc = accuracy
             best_model_wts = model.state_dict()
+
+        early_stopping(test_loss / len(test_loader), epoch + 1)
+        if early_stopping.early_stop:
+            final_epoch = early_stopping.stopped_epoch
+            print(f"\n[!] Deteniendo entrenamiento temprano (Early Stopping) en el Epoch {final_epoch}.")
+            print(f"[!] Mejor Accuracy validada guardada: {best_acc:.2f}%")
+            break
+
+    if not early_stopping.early_stop:
+        print(f"\n[!] Entrenamiento finalizado tras alcanzar los {epochs} epochs máximos.")
+        print(f"[!] Mejor Accuracy validada guardada: {best_acc:.2f}%")
 
     if best_model_wts is not None:
         model.load_state_dict(best_model_wts)
@@ -248,6 +251,60 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     model_name = f"{arch_name}_{feature_size}d_{timestamp}.pth"
 
+    # ==========================================
+    # NUEVO: REPORTE DE MÉTRICAS DETALLADO
+    # ==========================================
+    print("\n" + "="*50)
+    print("REPORTE DE CLASIFICACIÓN FINAL (EVALUACIÓN TEST)")
+    print("="*50)
+    
+    # Calcular Precisión, Recall y F1 para cada clase individual
+    precision_arr, recall_arr, f1_arr, support_arr = precision_recall_fscore_support(
+        all_labels, all_preds, labels=list(idx_to_label.keys()), zero_division=0
+    )
+
+    class_f1_scores = []
+    class_metrics_dict = {}
+
+    for i, class_idx in enumerate(idx_to_label.keys()):
+        p = precision_arr[i]
+        r = recall_arr[i]
+        f1 = f1_arr[i]
+        supp = support_arr[i]
+        
+        class_name = idx_to_label[class_idx]
+        
+        class_metrics_dict[class_name] = {
+            "Precision": p,
+            "Recall": r,
+            "F1-Score": f1,
+            "Support": int(supp)
+        }
+        class_f1_scores.append({"Class": class_name, "F1-Score": f1, "Precision": p, "Recall": r})
+        
+        print(f"Clase: {class_name:<20} | F1: {f1:.4f} | Prec: {p:.4f} | Rec: {r:.4f} | Instancias: {supp}")
+
+    # Reporte global de Scikit-Learn
+    report = classification_report(
+        all_labels, all_preds, target_names=[idx_to_label[i] for i in sorted(idx_to_label.keys())], zero_division=0
+    )
+    print("\nResumen Global:")
+    print(report)
+    print("="*50 + "\n")
+
+    # Guardar métricas extra en el JSON
+    training_stats["final_epoch_stopped"] = final_epoch
+    training_stats["class_detailed_metrics"] = class_metrics_dict
+    
+    weighted_f1 = sum([metrics["F1-Score"] * metrics["Support"] for metrics in class_metrics_dict.values()]) / sum(support_arr) if sum(support_arr) > 0 else 0
+    training_stats["weighted_f1"] = weighted_f1
+    training_stats["average_f1"] = np.mean([score["F1-Score"] for score in class_f1_scores])
+    training_stats["average_precision"] = np.mean([score["Precision"] for score in class_f1_scores])
+    training_stats["average_recall"] = np.mean([score["Recall"] for score in class_f1_scores])
+
+    # ==========================================
+    # GUARDADOS DE ARCHIVOS Y MATRICES
+    # ==========================================
     print(f"Generando matriz de confusión para {model_name}...")
     all_possible_classes = sorted(idx_to_label.keys(), key=int)
     matrices_dir = "./visualizations/matrices"
@@ -269,33 +326,18 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
         "Mapped Label": test_labels
     })
     test_data_df.to_csv(csv_path, index=False)
-    print(f"Conjunto de prueba guardado en: {csv_path}")
 
-    label_counts = Counter(all_labels)
-    class_f1_scores = []
-    weighted_f1_sum = 0
-    total_instances = sum(label_counts.values())
-
-    for label in set(all_labels):
-        tp = sum(1 for y_true, y_pred in zip(all_labels, all_preds) if y_true == label and y_pred == label)
-        fp = sum(1 for y_true, y_pred in zip(all_labels, all_preds) if y_true != label and y_pred == label)
-        fn = sum(1 for y_true, y_pred in zip(all_labels, all_preds) if y_true == label and y_pred != label)
-
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 0
-        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-
-        weighted_f1_sum += f1_score * label_counts[label]
-        class_f1_scores.append({"Class": label, "F1-Score": f1_score, "Precision": precision, "Recall": recall})
-
-    training_stats["weighted_f1"] = weighted_f1_sum / total_instances if total_instances > 0 else 0
-    training_stats["average_f1"] = np.mean([score["F1-Score"] for score in class_f1_scores])
-    training_stats["average_precision"] = np.mean([score["Precision"] for score in class_f1_scores])
-    training_stats["average_recall"] = np.mean([score["Recall"] for score in class_f1_scores])
-
+    # ----------------------------------------------------
+    # AÑADIDO: GUARDAR CONFIGURACIÓN Y PARÁMETROS EN EL JSON
+    # ----------------------------------------------------
     training_stats["class_mapping"] = {idx_to_label[int(k)]: int(k) for k in idx_to_label.keys()}
-    training_stats["class_distribution"] = {str(idx_to_label[int(label)]): count for label, count in label_counts.items()}
-    training_stats["best_accuracy"] = max(training_stats.get("best_accuracy", 0), best_acc)
+    training_stats["class_distribution"] = {str(idx_to_label[int(label)]): count for label, count in Counter(all_labels).items()}
+    training_stats["best_accuracy"] = best_acc
+    
+    # Insertar hiperparámetros
+    training_stats["model_hyperparameters"] = MODEL_HYPERPARAMETERS
+    training_stats["training_hyperparameters"] = TRAINING_HYPERPARAMETERS
+    training_stats["training_mode"] = params.get("TRAINING_MODE", "fine_grained")
 
     stats_dir = "./outputs/stats"
     os.makedirs(stats_dir, exist_ok=True)
@@ -308,9 +350,6 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
     torch.save(model.state_dict(), model_path)
     print(f"Modelo entrenado guardado como {model_name}.")
     
-    # -------------------------------------------------------------
-    # EXTRAER ARCHIVOS BALANCEADOS PARA CONOCIMIENTO DEL KNN
-    # -------------------------------------------------------------
     knowledge_dir = "./data/knowledge_sets/"
     os.makedirs(knowledge_dir, exist_ok=True)
     knowledge_csv = os.path.join(knowledge_dir, f"knowledge_{model_name.replace('.pth', '.csv')}")
@@ -319,9 +358,6 @@ def train_model(data, labels, gantry_distances, paths, unique_labels, label_to_i
         "Path": paths,           
         "Mapped Label": labels   
     }).to_csv(knowledge_csv, index=False)
-    print(f"Base de conocimiento guardada para KNN en: {knowledge_csv}")
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entrenar modelos de PyTorch Geometric")
@@ -396,4 +432,4 @@ if __name__ == "__main__":
         learning_rate=TRAINING_HYPERPARAMETERS["learning_rate"],
         model_type=args.model_type,
         feature_size=MODEL_HYPERPARAMETERS["feature_vector_size"]
-    )   
+    )
