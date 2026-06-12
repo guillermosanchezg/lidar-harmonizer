@@ -346,6 +346,8 @@ if __name__ == "__main__":
     parser.add_argument("--triplet_alpha", type=float, default=None,
                         help="Peso de la triplet loss (sobreescribe params.yaml). "
                              "0 = CE-only puro (sin mining).")
+    parser.add_argument("--max_instances", type=int, default=None,
+                        help="Máximo de instancias por clase en Knowledge (sobreescribe params.yaml).")
     args = parser.parse_args()
 
     # Alpha: CLI > params.yaml > default 0.5
@@ -400,7 +402,9 @@ if __name__ == "__main__":
     # -----------------------------------------------------------------
     # 3. Split persistido (siempre con clases ORIGINALES)
     # -----------------------------------------------------------------
-    max_instances = TRAINING_HYPERPARAMETERS["max_instances"]
+    max_instances = (args.max_instances
+                     if args.max_instances is not None
+                     else TRAINING_HYPERPARAMETERS["max_instances"])
 
     knowledge_indices, unseen_indices = load_or_create_split(
         filt_data, filt_orig_labels, filt_paths, filt_gantry,

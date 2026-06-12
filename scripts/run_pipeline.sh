@@ -4,6 +4,7 @@
 #                                 [--mode {superclass|fine_grained}]
 #                                 [--latent_dim 1024]
 #                                 [--triplet_alpha 0.5]
+#                                 [--max_instances 1000]
 set -e
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -14,6 +15,7 @@ MODEL_TYPE="pointnet2"
 MODE="superclass"
 LATENT_DIM=1024
 TRIPLET_ALPHA=""   # vacío → usa el valor de params.yaml
+MAX_INSTANCES=""   # vacío → usa el valor de params.yaml
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -21,15 +23,20 @@ while [[ "$#" -gt 0 ]]; do
         --mode)          MODE="$2";          shift ;;
         --latent_dim)    LATENT_DIM="$2";    shift ;;
         --triplet_alpha) TRIPLET_ALPHA="$2"; shift ;;
+        --max_instances) MAX_INSTANCES="$2"; shift ;;
         *) echo "Parámetro desconocido: $1"; exit 1 ;;
     esac
     shift
 done
 
-# Construir flag opcional de alpha
+# Construir flags opcionales
 ALPHA_FLAG=""
 if [ -n "$TRIPLET_ALPHA" ]; then
     ALPHA_FLAG="--triplet_alpha $TRIPLET_ALPHA"
+fi
+MAX_INST_FLAG=""
+if [ -n "$MAX_INSTANCES" ]; then
+    MAX_INST_FLAG="--max_instances $MAX_INSTANCES"
 fi
 
 # Sufijo de modo
@@ -53,6 +60,7 @@ echo " Arquitectura : $MODEL_TYPE"
 echo " Modo         : $MODE"
 echo " Espacio lat. : ${LATENT_DIM}D"
 echo " Triplet alpha: ${TRIPLET_ALPHA:-<params.yaml>}"
+echo " Max instances: ${MAX_INSTANCES:-<params.yaml>}"
 echo "========================================================"
 
 # Actualizar TRAINING_MODE en params.yaml
@@ -74,7 +82,7 @@ fi
 # -------------------------------------------------------
 echo ""
 echo "[1/6] Entrenando modelo ($MODEL_TYPE, alpha=${TRIPLET_ALPHA:-yaml})..."
-python train_pyg.py --model_type "$MODEL_TYPE" $ALPHA_FLAG
+python train_pyg.py --model_type "$MODEL_TYPE" $ALPHA_FLAG $MAX_INST_FLAG
 
 LATEST_MODEL=$(ls -t "./outputs/models/"${PTH_PATTERN} 2>/dev/null | head -1)
 if [ -z "$LATEST_MODEL" ]; then
