@@ -201,7 +201,10 @@ def collect_models() -> list[dict]:
         minority = _minority_f1(traj_metrics, best_traj_rule, best_traj_k)
 
         # Latencia
-        lat_csv = os.path.join(RESULTS_DIR, f"latency_benchmark_{model_id}.csv")
+        # Los metrics se nombran metrics_{mid}.pth.json (de ahí que model_id lleve
+        # el sufijo .pth), pero los CSV de latencia se guardan SIN .pth.
+        mid_no_pth = model_id[:-4] if model_id.endswith(".pth") else model_id
+        lat_csv = os.path.join(RESULTS_DIR, f"latency_benchmark_{mid_no_pth}.csv")
         avg_latency = _avg_latency(lat_csv)
 
         row = {
