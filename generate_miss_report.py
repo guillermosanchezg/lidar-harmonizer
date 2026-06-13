@@ -125,8 +125,9 @@ def main():
             "pred_confidence":    round(confidence, 3),
             "top_neighbor_class": top_neighbor,
             "top_neighbor_pct":   round(top_neighbor_pct, 3),
-            # Baja confianza + vecinos apuntan a otra clase = posible error de etiquetado
-            "label_error_suspect": (confidence < 0.35 and top_neighbor == true_name is False),
+            # Vecinos apuntan mayoritariamente a clase distinta de la etiqueta = posible error
+            # top_neighbor_pct > 0.5 significa que >50% de los k vecinos son de otra clase
+            "label_error_suspect": (top_neighbor != true_name and top_neighbor_pct > 0.5),
             "sample_path_1":      paths[0] if len(paths) > 0 else "",
             "sample_path_2":      paths[1] if len(paths) > 1 else "",
             "sample_path_3":      paths[2] if len(paths) > 2 else "",
