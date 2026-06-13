@@ -145,6 +145,51 @@ def save_csv(data, path, columns):
     data[columns].to_csv(path, index=False)
 
 
+def _track_length_bin(n):
+    """Bins de longitud de tracking: 1, 2, 3, 4+."""
+    if n <= 1:
+        return "1"
+    if n == 2:
+        return "2"
+    if n == 3:
+        return "3"
+    return "4+"
+
+
+def compute_f1_by_track_length(data, pred_col, tp_col, idx_to_name_map):
+    """
+    Desglose de F1 de TRAYECTORIA por longitud de tracking (nº de frames del
+    event_id). Se evalúa a nivel VEHÍCULO: una muestra por event_id, con su
+    predicción ya votada y su Original Label (constante dentro del vehículo).
+
+    El bin de longitud 1 es el CONTROL: un vehículo con un solo frame no tiene
+    nada que votar, así que su F1 coincide con el frame-level de esos frames.
+
+    Devuelve {bin: {"n_vehicles": int, "average_f1": float, "weighted_f1": float}}.
+    """
+    # Una fila por vehículo (todas las filas de un event_id comparten predicción
+    # votada y Original Label, así que .first() es representativo).
+    sizes = data.groupby("event_id").size()
+    veh   = data.groupby("event_id").first().copy()
+    veh["track_length"] = sizes
+    veh["__bin"]        = veh["track_length"].apply(_track_length_bin)
+    veh[tp_col]         = veh["Original Label"] == veh[pred_col]
+
+    out = {}
+    for b in ["1", "2", "3", "4+"]:
+        sub = veh[veh["__bin"] == b]
+        if len(sub) == 0:
+            out[b] = {"n_vehicles": 0, "average_f1": None, "weighted_f1": None}
+            continue
+        m = get_metrics_for_method(sub, pred_col, tp_col, idx_to_name_map)
+        out[b] = {
+            "n_vehicles":  int(len(sub)),
+            "average_f1":  m["average_f1"],
+            "weighted_f1": m["weighted_f1"],
+        }
+    return out
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("model_name", type=str)
@@ -172,7 +217,8 @@ def main():
     data_full["Original Label"] = data_full["Original Label"].astype(int)
 
     results = {"majority": {}, "inverse": {}, "squared": {}}
-    best = {"majority": (None, 0), "inverse": (None, 0), "squared": (None, 0)}
+    best     = {"majority": (None, 0), "inverse": (None, 0), "squared": (None, 0)}
+    best_f1tl = {"majority": None,    "inverse": None,       "squared": None}
 
     for k in range(2, 11):
         data_k = data_full.copy()
@@ -195,6 +241,8 @@ def main():
         ]:
             if metric_val >= best[variant][1]:
                 best[variant] = (k, metric_val)
+                best_f1tl[variant] = compute_f1_by_track_length(
+                    data_k, pred_col, tp_col, idx_to_name_map)
                 cols = ["Query", "Original Label", pred_col, "Neighbor Labels", "Distances", "Neighbors"]
                 save_csv(data_k[~data_k[tp_col]], f"{out_dir}/misses_trajectory_{model_name}_{variant}.csv", cols)
                 save_csv(data_k[ data_k[tp_col]], f"{out_dir}/matches_trajectory_{model_name}_{variant}.csv", cols)
@@ -208,11 +256,50 @@ def main():
         "metrics_majority": results["majority"],
         "metrics_inverse":  results["inverse"],
         "metrics_squared":  results["squared"],
+        "f1_by_track_length": {v: best_f1tl[v] for v in ("majority", "inverse", "squared")
+                                if best_f1tl[v] is not None},
     }
 
     with open(output_path, "w") as f:
         json.dump(final, f, indent=4)
     print(f"\n✅ Métricas de trayectoria guardadas en {output_path}")
+
+    # --- Tabla terminal: F1 por longitud de tracking ---
+    print("\nF1 por longitud de tracking (mejor k por regla):")
+    print(f"{'Regla':<12} {'Bin':<5} {'N_Veh':>7} {'avg_F1':>8} {'wF1':>8}")
+    print("-" * 45)
+    for rule in ("majority", "inverse", "squared"):
+        tl = best_f1tl.get(rule)
+        if tl is None:
+            continue
+        for b in ("1", "2", "3", "4+"):
+            entry   = tl.get(b, {})
+            n       = entry.get("n_vehicles", 0)
+            avg_f1  = entry.get("average_f1")
+            wf1     = entry.get("weighted_f1")
+            avg_str = f"{avg_f1:.4f}" if avg_f1 is not None else "—"
+            wf1_str = f"{wf1:.4f}"   if wf1    is not None else "—"
+            print(f"{rule:<12} {b:<5} {n:>7} {avg_str:>8} {wf1_str:>8}")
+
+    # --- CSV: f1_by_track_length_{model_name}.csv ---
+    tl_rows = []
+    for rule in ("majority", "inverse", "squared"):
+        tl = best_f1tl.get(rule)
+        if tl is None:
+            continue
+        for b in ("1", "2", "3", "4+"):
+            entry = tl.get(b, {})
+            tl_rows.append({
+                "rule":        rule,
+                "bin":         b,
+                "n_vehicles":  entry.get("n_vehicles", 0),
+                "average_f1":  entry.get("average_f1"),
+                "weighted_f1": entry.get("weighted_f1"),
+            })
+    if tl_rows:
+        tl_csv_path = f"{out_dir}/f1_by_track_length_{model_name}.csv"
+        pd.DataFrame(tl_rows).to_csv(tl_csv_path, index=False)
+        print(f"✅ F1 por longitud de tracking guardado en {tl_csv_path}")
 
 
 if __name__ == "__main__":

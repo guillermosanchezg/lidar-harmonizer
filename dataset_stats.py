@@ -132,13 +132,14 @@ def scan_dataset(dataset_root: str, max_sample_per_class: int = 200) -> dict:
     cls_data: dict[str, dict] = {}
     for cls in VALID_CLASSES:
         cls_data[str(cls)] = {
-            "frames":       0,
-            "vehicles":     set(),
-            "gantries":     defaultdict(int),
-            "days":         set(),
-            "hours":        [],
-            "point_counts": [],   # muestra de hasta max_sample_per_class
-            "corrupted":    0,
+            "frames":               0,
+            "vehicles":             set(),
+            "vehicle_frame_counts": defaultdict(int),  # event_id → n_frames
+            "gantries":             defaultdict(int),
+            "days":                 set(),
+            "hours":                [],
+            "point_counts":         [],
+            "corrupted":            0,
         }
 
     global_gantries: dict[str, int] = defaultdict(int)
@@ -191,6 +192,7 @@ def scan_dataset(dataset_root: str, max_sample_per_class: int = 200) -> dict:
 
                         cls_data[cls_str]["frames"] += 1
                         cls_data[cls_str]["vehicles"].add(event_id)
+                        cls_data[cls_str]["vehicle_frame_counts"][event_id] += 1
                         cls_data[cls_str]["gantries"][gantry] += 1
                         if hour_int >= 0:
                             cls_data[cls_str]["hours"].append(hour_int)
@@ -322,9 +324,40 @@ def build_superclass_rows_from_cls(cls_data: dict) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Distribución de longitud de tracking
+# ---------------------------------------------------------------------------
+def compute_track_length_distribution(cls_data: dict) -> dict:
+    """
+    Frames-per-vehicle distribution (track length), global y por superclase.
+    Devuelve {scope_name: {track_length: n_vehicles}}.
+    scope_name es "global" o el nombre de la superclase.
+    """
+    global_vfc: dict[str, int] = {}
+    sc_vfc: dict[int, dict[str, int]] = {sc: {} for sc in SUPERCLASS_NAMES}
+
+    for cls_str, d in cls_data.items():
+        cls_int = int(cls_str)
+        sc = SUPERCLASS_MAPPING.get(cls_int, 5)
+        for ev_id, n_frames in d["vehicle_frame_counts"].items():
+            global_vfc[ev_id] = global_vfc.get(ev_id, 0) + n_frames
+            sc_vfc[sc][ev_id] = sc_vfc[sc].get(ev_id, 0) + n_frames
+
+    def _dist(vfc: dict) -> dict:
+        d = defaultdict(int)
+        for n in vfc.values():
+            d[n] += 1
+        return {k: v for k, v in sorted(d.items())}
+
+    result = {"global": _dist(global_vfc)}
+    for sc_id in sorted(SUPERCLASS_NAMES.keys()):
+        result[SUPERCLASS_NAMES[sc_id]] = _dist(sc_vfc[sc_id])
+    return result
+
+
+# ---------------------------------------------------------------------------
 # Histogramas opcionales
 # ---------------------------------------------------------------------------
-def make_plots(cls_data: dict, out_dir: str):
+def make_plots(cls_data: dict, out_dir: str, track_length_dist: dict = None):
     try:
         import matplotlib.pyplot as plt
     except ImportError:
@@ -392,6 +425,24 @@ def make_plots(cls_data: dict, out_dir: str):
         plt.savefig(os.path.join(out_dir, f"pts_{safe_name}.png"), dpi=120)
         plt.close()
 
+    # 5. Track length distribution (global)
+    if track_length_dist is not None:
+        g = track_length_dist.get("global", {})
+        if g:
+            lengths  = sorted(g.keys())
+            n_vehs   = [g[l] for l in lengths]
+            xlabels  = [str(l) for l in lengths]
+            fig, ax  = plt.subplots(figsize=(14, 4))
+            ax.bar(range(len(lengths)), n_vehs, edgecolor="black")
+            ax.set_xticks(range(len(lengths)))
+            ax.set_xticklabels(xlabels, fontsize=7)
+            ax.set_xlabel("Frames por vehículo (track length)")
+            ax.set_ylabel("Nº de vehículos")
+            ax.set_title("Distribución de longitud de tracking (global)")
+            plt.tight_layout()
+            plt.savefig(os.path.join(out_dir, "track_length_distribution.png"), dpi=150)
+            plt.close()
+
     print(f"✅ Histogramas guardados en {out_dir}")
 
 
@@ -414,8 +465,11 @@ def main():
 
     # Escaneo
     scan = scan_dataset(args.dataset_root, max_sample_per_class=args.max_sample)
-    cls_data = scan["classes"]
+    cls_data    = scan["classes"]
     global_info = scan["global"]
+
+    # Distribución de longitud de tracking
+    tld = compute_track_length_distribution(cls_data)
 
     # Tabla por clase fina
     class_rows = build_class_rows(cls_data)
@@ -435,6 +489,7 @@ def main():
         hour_dist[h] += 1
 
     stats_json = {
+        "track_length_distribution": tld,
         "global": {
             "total_frames":        global_info["total_frames"],
             "total_corrupted":     global_info["total_corrupted"],
@@ -502,6 +557,21 @@ def main():
     df_class.to_csv(cls_csv_path, index=False)
     print(f"✅ Tabla por clase fina guardada en {cls_csv_path}")
 
+    # --- CSV: track_length_distribution.csv ---
+    tl_rows = []
+    for scope, dist in tld.items():
+        total_veh = sum(dist.values())
+        for length, n_veh in dist.items():
+            tl_rows.append({
+                "scope":          scope,
+                "track_length":   length,
+                "n_vehicles":     n_veh,
+                "pct_vehicles":   round(100.0 * n_veh / total_veh, 2) if total_veh > 0 else 0.0,
+            })
+    tl_csv_path = os.path.join(args.out_dir, "track_length_distribution.csv")
+    pd.DataFrame(tl_rows).to_csv(tl_csv_path, index=False)
+    print(f"✅ Distribución de track length guardada en {tl_csv_path}")
+
     # Resumen rápido en terminal
     print("\n" + "=" * 62)
     print(f"DATASET STATS — {global_info['total_frames']:,} frames totales")
@@ -516,9 +586,17 @@ def main():
               f"{row['unique_vehicles']:>10,} {row['capture_days']:>5}")
     print("=" * 62)
 
+    # % de vehículos con un solo frame
+    g_dist   = tld.get("global", {})
+    total_v  = sum(g_dist.values())
+    single_v = g_dist.get(1, 0)
+    if total_v > 0:
+        print(f"\nVehículos con track_length=1 (control): "
+              f"{single_v:,} / {total_v:,} ({100.0 * single_v / total_v:.1f}%)")
+
     if args.plots:
         plot_dir = "./visualizations/dataset"
-        make_plots(cls_data, plot_dir)
+        make_plots(cls_data, plot_dir, track_length_dist=tld)
 
 
 if __name__ == "__main__":
