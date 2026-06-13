@@ -35,11 +35,18 @@ except ImportError:
 # Mapeo de clases
 # ---------------------------------------------------------------------------
 SUPERCLASS_MAPPING = {
-    2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0,   # Passenger Car
-    8: 1, 9: 1, 10: 1,                       # Van
-    11: 2,                                   # Bus
-    13: 3, 14: 3, 15: 3,                     # Rigid Truck
-    17: 4, 18: 4, 19: 4,                     # Articulated Truck
+    2:  0,   # turismo → Passenger Car
+    13: 1,   # L3H3 → Van
+    4:  2,   # bus → Bus
+    5:  2,   # mini bus → Bus
+    3:  3,   # camión rígido → Rigid Truck
+    7:  3,   # camión con contenedor → Rigid Truck
+    8:  3,   # camión de obra → Rigid Truck
+    14: 3,   # hormigonera → Rigid Truck
+    9:  4,   # camión articulado → Articulated Truck
+    6:  5,   # caravana → Other Vehicles
+    15: 5,   # grúa → Other Vehicles
+    16: 5,   # cabeza tractora → Other Vehicles
 }
 
 SUPERCLASS_NAMES = {
@@ -52,22 +59,18 @@ SUPERCLASS_NAMES = {
 }
 
 CLASS_NAMES = {
-    2: "Passenger Car Type 1",
-    3: "Passenger Car Type 2",
-    4: "Passenger Car Type 3",
-    5: "Passenger Car Type 4",
-    6: "Passenger Car Type 5",
-    7: "Passenger Car Type 6",
-    8: "Van Type 1",
-    9: "Van Type 2",
-    10: "Van Type 3",
-    11: "Bus",
-    13: "Rigid Truck Type 1",
-    14: "Rigid Truck Type 2",
-    15: "Rigid Truck Type 3",
-    17: "Articulated Truck Type 1",
-    18: "Articulated Truck Type 2",
-    19: "Articulated Truck Type 3",
+    2:  "Turismo",
+    3:  "Camión Rígido",
+    4:  "Bus",
+    5:  "Mini Bus",
+    6:  "Caravana",
+    7:  "Camión con Contenedor",
+    8:  "Camión de Obra",
+    9:  "Camión Articulado",
+    13: "L3H3",
+    14: "Hormigonera",
+    15: "Grúa",
+    16: "Cabeza Tractora",
 }
 
 VALID_CLASSES = set(SUPERCLASS_MAPPING.keys())

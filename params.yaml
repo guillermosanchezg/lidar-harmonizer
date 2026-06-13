@@ -6,7 +6,7 @@ TRAINING_HYPERPARAMETERS:
   epochs: 100
   batch_size: 64
   learning_rate: 0.001
-  max_instances: 5000
+  max_instances: 500
   early_stopping_patience: 25
   early_stopping_delta: 0.01
   triplet_alpha: 0.5   # peso de triplet loss; 0 = CE-only puro (sin mining)
@@ -27,31 +27,24 @@ SELECTED_CLASSES:
   - 7
   - 8
   - 9
-  - 10
-  - 11
   - 13
   - 14
   - 15
-  - 17
-  - 18
-  - 19
+  - 16
 
 CLASS_NAME_MAPPING:
-  2: "turismo"
-  3: "camión rígido"
-  4: "bus"  
-  5: "mini bus"
-  6: "caravana"
-  7: "camión con contenedor"
-  8: "camión de obra"
-  9: "camión articulado"
+  2:  "turismo"
+  3:  "camión rígido"
+  4:  "bus"
+  5:  "mini bus"
+  6:  "caravana"
+  7:  "camión con contenedor"
+  8:  "camión de obra"
+  9:  "camión articulado"
   13: "L3H3"
   14: "hormigonera"
   15: "grúa"
   16: "cabeza tractora"
-  17: "camión de trabajo"
-  18: "asistencia de carretera"
-  19: "blindado"
 
 CONFUSION_MATRIX_CONFIG:
   save_dir: "./matrices"
@@ -63,23 +56,18 @@ CONFUSION_MATRIX_CONFIG:
 TRAINING_MODE: "superclass"
 
 SUPERCLASS_MAPPING:
-  2: 0  # Passenger car
-  13: 1 # Van L3H3
-  4: 2  # Bus
-  5: 2  # Mini bus -> Bus
-  3: 3  # Rigid truck
-  9: 4  # Articulated truck
-  # El resto será mapeado a 5 (Otros) de forma automática por código pero es mejor declararlos:
-  6: 5
-  7: 5
-  8: 5
-  10: 5
-  11: 5
-  14: 5
-  15: 5
-  17: 5
-  18: 5
-  19: 5
+  2:  0   # turismo → Passenger Car
+  13: 1   # L3H3 → Van
+  4:  2   # bus → Bus
+  5:  2   # mini bus → Bus
+  3:  3   # camión rígido → Rigid Truck
+  7:  3   # camión con contenedor → Rigid Truck
+  8:  3   # camión de obra → Rigid Truck
+  14: 3   # hormigonera → Rigid Truck
+  9:  4   # camión articulado → Articulated Truck
+  6:  5   # caravana → Other Vehicles
+  15: 5   # grúa → Other Vehicles
+  16: 5   # cabeza tractora → Other Vehicles
 
 SUPERCLASS_NAMES:
   0: "Passenger Car"
@@ -91,21 +79,18 @@ SUPERCLASS_NAMES:
 
 
 ENGLISH_CLASS_NAMES:
-    2: "Passenger Car"
-    3: "Rigid Truck"
-    4: "Bus"
-    5: "Mini Bus"
-    6: "Caravan"
-    7: "Container Truck"
-    8: "Construction Truck"
-    9: "Articulated Truck"
+    2:  "Passenger Car"
+    3:  "Rigid Truck"
+    4:  "Bus"
+    5:  "Mini Bus"
+    6:  "Caravan"
+    7:  "Container Truck"
+    8:  "Construction Truck"
+    9:  "Articulated Truck"
     13: "L3H3"
     14: "Concrete Mixer"
     15: "Crane"
     16: "Tractor Unit"
-    17: "Work Truck"
-    18: "Roadside Assistance"
-    19: "Armored Vehicle"
 
 
 SUPERCLASS_NAMES_EN:
