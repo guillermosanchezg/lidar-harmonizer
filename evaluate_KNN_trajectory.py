@@ -179,13 +179,15 @@ def compute_f1_by_track_length(data, pred_col, tp_col, idx_to_name_map):
     for b in ["1", "2", "3", "4+"]:
         sub = veh[veh["__bin"] == b]
         if len(sub) == 0:
-            out[b] = {"n_vehicles": 0, "average_f1": None, "weighted_f1": None}
+            out[b] = {"n_vehicles": 0, "average_f1": None, "weighted_f1": None,
+                      "class_metrics": {}}
             continue
         m = get_metrics_for_method(sub, pred_col, tp_col, idx_to_name_map)
         out[b] = {
-            "n_vehicles":  int(len(sub)),
-            "average_f1":  m["average_f1"],
-            "weighted_f1": m["weighted_f1"],
+            "n_vehicles":   int(len(sub)),
+            "average_f1":   m["average_f1"],
+            "weighted_f1":  m["weighted_f1"],
+            "class_metrics": m["class_metrics"],
         }
     return out
 
@@ -289,13 +291,20 @@ def main():
             continue
         for b in ("1", "2", "3", "4+"):
             entry = tl.get(b, {})
-            tl_rows.append({
+            row = {
                 "rule":        rule,
                 "bin":         b,
                 "n_vehicles":  entry.get("n_vehicles", 0),
                 "average_f1":  entry.get("average_f1"),
                 "weighted_f1": entry.get("weighted_f1"),
-            })
+            }
+            for cls_name, cm in (entry.get("class_metrics") or {}).items():
+                safe = cls_name.replace(" ", "_")
+                row[f"f1_{safe}"]      = round(cm["f1"], 6)      if cm.get("f1")      is not None else None
+                row[f"prec_{safe}"]    = round(cm["precision"], 6) if cm.get("precision") is not None else None
+                row[f"rec_{safe}"]     = round(cm["recall"], 6)   if cm.get("recall")   is not None else None
+                row[f"support_{safe}"] = cm.get("support")
+            tl_rows.append(row)
     if tl_rows:
         tl_csv_path = f"{out_dir}/f1_by_track_length_{model_name}.csv"
         pd.DataFrame(tl_rows).to_csv(tl_csv_path, index=False)
